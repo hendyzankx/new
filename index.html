@@ -157,7 +157,6 @@
         font-size: 13px !important;
       }
 
-      /* Tombol Plus Minus Kecil */
       .btn-qty-kecil {
         background: var(--biru) !important;
         padding: 6px 12px !important;
@@ -362,7 +361,7 @@
 
       /* ===== STYLE STRUK CETAK PROFESIONAL (PDF READY) ===== */
       #cetakStruk {
-        display: none; /* Hidden by default */
+        display: none; 
         font-family: "Courier Prime", "Courier New", monospace;
         background: white;
         color: black;
@@ -370,14 +369,14 @@
         max-width: 80mm;
         margin: 0 auto;
         padding: 0;
-        z-index: 9999;
-        position: absolute; /* PENTING: Absolute agar bisa di-flush ke atas saat print */
+        z-index: 99999;
+        position: absolute; 
         top: 0;
         left: 0;
       }
       #cetakStruk .paper {
         padding: 10px;
-        border: 1px dashed #ccc; /* Border untuk preview di layar */
+        border: 1px dashed #ccc; 
       }
       #cetakStruk .header-store {
         text-align: center;
@@ -447,7 +446,6 @@
       #cetakStruk .thank-you { font-weight: bold; margin-top: 5px; text-transform: uppercase; }
       /* ===== AKHIR STYLE STRUK CETAK ===== */
 
-      /* ===== Dropdown pencarian barang manual ===== */
       .pencarian-wrap {
         position: relative;
       }
@@ -519,7 +517,6 @@
         white-space: nowrap;
       }
 
-      /* ===== Badge kategori di tabel barang ===== */
       .badge-kategori {
         display: inline-block;
         padding: 3px 8px;
@@ -535,7 +532,6 @@
       .badge-kebutuhan { background: #d1fae5; color: #065f46; }
       .badge-lainnya { background: #f1f5f9; color: #475569; }
 
-      /* ===== Filter kategori di tab barang ===== */
       .filter-grid {
         display: flex;
         flex-wrap: wrap;
@@ -556,7 +552,6 @@
       .filter-chip:hover { border-color: var(--biru); color: var(--biru); }
       .filter-chip.aktif { background: var(--biru); color: white; border-color: var(--biru); }
 
-      /* ===== TOAST NOTIFICATION ===== */
       .toast-container {
         position: fixed;
         bottom: 20px;
@@ -591,7 +586,6 @@
       .toast-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; color: #1e293b; }
       .toast-msg { font-size: 13px; color: #4b5563; }
 
-      /* Input File Style Override */
       input[type="file"] {
         font-size: 13px;
         padding: 8px;
@@ -611,7 +605,6 @@
         background: var(--biru-gelap);
       }
 
-      /* ===== POPUP MODAL CONFIRMATION (NEW STYLE) ===== */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -734,7 +727,6 @@
       }
       .btn-modal-no:hover { background: #e2e8f0; }
 
-      /* ===== PRINT MEDIA QUERY (AGAR TAMPIL PDF RAPI) ===== */
       @media print {
         body {
           background: white;
@@ -768,7 +760,6 @@
   </head>
   <body>
     <div class="app">
-      <!-- Header Aplikasi (Nama toko dinamis) -->
       <div class="header no-print">
         <h1 id="headerAppName">💰 KASIR PRO OFFLINE</h1>
         <small id="headerAppDesc">Scan cepat, atur jumlah, pantau keuntungan otomatis</small>
@@ -852,7 +843,6 @@
 
             <input type="number" id="bayar" placeholder="Uang dari pembeli" oninput="hitungKembali()" />
             
-            <!-- Kembalian diperbesar -->
             <div class="total-box hijau">
               <div class="label">KEMBALIAN</div>
               <div class="angka" style="font-size: 36px; line-height: 1;">Rp <span id="kembalian">0</span></div>
@@ -957,7 +947,6 @@
 
         <!-- TAB PENGATURAN -->
         <div id="pengaturan" class="hide no-print">
-          <!-- Profil Toko -->
           <div class="card">
             <h3>⚙️ Pengaturan Profil Toko</h3>
             <div class="setting-row">
@@ -979,7 +968,6 @@
             <button onclick="simpanPengaturan()" class="btn-save">💾 Simpan Perubahan</button>
           </div>
 
-          <!-- Backup & Restore -->
           <div class="card">
             <h3>💾 Backup & Restore Data</h3>
             <p style="font-size: 13px; color: #64748b; margin-bottom: 10px">
@@ -997,7 +985,6 @@
             <div id="restoreStatus" style="font-size: 12px; margin-top: 5px; color: #64748b;"></div>
           </div>
 
-          <!-- Danger Zone -->
           <div class="card" style="border: 1px solid #fca5a5; background: #fef2f2">
             <h3 style="color: #991b1b">⚠️ Zona Bahaya (Hapus Data)</h3>
             <p style="font-size: 13px; color: #7f1d1d; margin-bottom: 10px">
@@ -1008,10 +995,9 @@
           </div>
         </div>
 
-        <!-- AREA CETAK STRUK (BERSIH DARI LABA) -->
+        <!-- AREA CETAK STRUK -->
         <div id="cetakStruk">
           <div class="paper">
-            <!-- Header -->
             <div class="header-store">
               <div class="store-name" id="printStoreName">TOKO KASIR PRO</div>
               <div class="store-address" id="printStoreAddress">
@@ -1019,15 +1005,11 @@
                 Telp: 0812-3456-7890
               </div>
             </div>
-
-            <!-- Info Transaksi -->
             <div class="meta-info">
               <span id="printDate">Tgl: -</span>
               <span id="printNoStruk">No: #001</span>
               <span id="printKasir">Kasir: Admin</span>
             </div>
-
-            <!-- Tabel Item -->
             <table class="items">
               <thead>
                 <tr>
@@ -1038,8 +1020,6 @@
               </thead>
               <tbody id="tbodyCetak"></tbody>
             </table>
-
-            <!-- Total -->
             <div class="divider"></div>
             <div class="summary-row">
               <span>Total Belanja</span>
@@ -1053,8 +1033,6 @@
               <span>Kembali</span>
               <span id="kembaliCetak">Rp 0</span>
             </div>
-
-            <!-- Footer -->
             <div class="divider"></div>
             <div class="footer">
               <div class="thank-you">TERIMA KASIH</div>
@@ -1070,14 +1048,13 @@
       </div>
     </div>
 
-    <!-- POPUP MODAL CONFIRMATION (NEW DESIGN) -->
+    <!-- POPUP MODAL CONFIRMATION -->
     <div id="modalKonfirmasi" class="modal-overlay">
       <div class="modal-box">
         <div class="modal-header">
           <span class="modal-icon">✅</span>
           <div class="modal-title">TRANSAKSI SUKSES!</div>
         </div>
-        
         <div class="modal-body">
           <div class="summary-grid">
             <div class="sum-card">
@@ -1093,7 +1070,6 @@
               <div class="sum-val green" id="modalKembalian" style="font-size: 28px;">Rp 0</div>
             </div>
           </div>
-
           <div class="modal-actions">
             <button class="btn-modal-yes" onclick="lanjutkanCetak(true)">✅ Cetak / PDF</button>
             <button class="btn-modal-no" onclick="lanjutkanCetak(false)">Tidak</button>
@@ -1102,11 +1078,9 @@
       </div>
     </div>
 
-    <!-- CONTAINER TOAST NOTIFICATION -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-      // === VARIABEL GLOBAL & STATE ===
       let dbBarang = JSON.parse(localStorage.getItem("barang") || "[]");
       let dbTransaksi = JSON.parse(localStorage.getItem("transaksi") || "[]");
       let dbPengaturan = JSON.parse(localStorage.getItem("pengaturan") || "{}");
@@ -1504,11 +1478,14 @@
         if (barangDb && item.qty + 1 <= barangDb.stok) { item.qty++; renderStruk(); } 
         else { let sisa = barangDb ? barangDb.stok : 0; alert(`Stok tidak mencukupi!\nMaksimal bisa beli: ${sisa}`); }
       }
+      
+      // PERBAIKAN TYPO: Perbaiki fungsi setUang
       function setUang(nominal) {
         let total = struk.reduce((a, b) => a + b.hargaJual * b.qty, 0);
         document.getElementById("bayar").value = nominal === "pas" ? total : nominal;
         hitungKembali();
       }
+
       function renderStruk() {
         let tbody = document.querySelector("#tabelStruk tbody");
         tbody.innerHTML = "";
@@ -1586,24 +1563,18 @@
 
         if (isCetak) {
           let elemenStruk = document.getElementById("cetakStruk");
-          
-          // PERBAIKAN UTAMA:
-          // 1. Paksa elemen muncul dengan posisi absolut di atas layar
           elemenStruk.style.display = "block";
           elemenStruk.style.top = "0";
           elemenStruk.style.left = "0";
           elemenStruk.style.zIndex = "99999";
 
-          // 2. Beri jeda agar browser merender struk
           setTimeout(function () {
-            // 3. Trigger print
             window.print();
             
-            // 4. Setelah print dialog muncul, sembunyikan kembali setelah jeda waktu
             setTimeout(function () {
               elemenStruk.style.display = "none";
               elemenStruk.style.zIndex = "";
-            }, 2000); // Waktu cukup lama agar user melihat preview
+            }, 2000); 
           }, 500);
         }
         
