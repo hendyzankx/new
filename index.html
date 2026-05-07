@@ -3,13 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <!-- Link ke Manifest agar bisa diinstall di HP -->
-    <link rel="manifest" href="manifest.json" />
     <title>Kasir Pro Offline</title>
-
-    <!-- Warna tema browser (Address bar) -->
     <meta name="theme-color" content="#2563eb" />
-
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap"
@@ -193,7 +188,6 @@
         letter-spacing: 0.5px;
       }
 
-      /* Style khusus tab Pengaturan */
       .setting-row {
         margin-bottom: 15px;
       }
@@ -368,18 +362,22 @@
 
       /* ===== STYLE STRUK CETAK PROFESIONAL (PDF READY) ===== */
       #cetakStruk {
-        display: none; /* Hidden on screen */
+        display: none; /* Hidden by default */
         font-family: "Courier Prime", "Courier New", monospace;
         background: white;
         color: black;
         width: 100%;
-        max-width: 80mm; /* Standard thermal width */
+        max-width: 80mm;
         margin: 0 auto;
         padding: 0;
+        z-index: 9999;
+        position: absolute; /* PENTING: Absolute agar bisa di-flush ke atas saat print */
+        top: 0;
+        left: 0;
       }
       #cetakStruk .paper {
         padding: 10px;
-        border: 1px dashed #ccc;
+        border: 1px dashed #ccc; /* Border untuk preview di layar */
       }
       #cetakStruk .header-store {
         text-align: center;
@@ -613,14 +611,15 @@
         background: var(--biru-gelap);
       }
 
-      /* ===== POPUP MODAL CONFIRMATION ===== */
+      /* ===== POPUP MODAL CONFIRMATION (NEW STYLE) ===== */
       .modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
         z-index: 10000;
         display: flex;
         justify-content: center;
@@ -636,77 +635,104 @@
       .modal-box {
         background: white;
         width: 90%;
-        max-width: 400px;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        max-width: 420px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         text-align: center;
-        transform: scale(0.9);
-        transition: transform 0.3s;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       .modal-overlay.show .modal-box {
-        transform: scale(1);
+        transform: translateY(0);
+      }
+      .modal-header {
+        background: linear-gradient(135deg, #10b981, #059669);
+        padding: 20px;
+        color: white;
       }
       .modal-icon {
-        font-size: 48px;
-        margin-bottom: 16px;
+        font-size: 40px;
+        margin-bottom: 5px;
         display: block;
       }
       .modal-title {
         font-size: 20px;
-        font-weight: 700;
-        color: var(--text-gelap);
-        margin-bottom: 8px;
-      }
-      .modal-detail-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: #64748b;
-      }
-      .modal-detail-row span.val {
-        font-weight: 600;
-        color: var(--text-gelap);
-      }
-      .modal-divider {
-        height: 1px;
-        background: #e2e8f0;
-        margin: 16px 0;
-      }
-      .modal-total {
-        font-size: 24px;
         font-weight: 800;
-        color: var(--hijau);
+        margin: 0;
+        letter-spacing: 0.5px;
+      }
+      
+      .modal-body {
+        padding: 24px 20px;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
         margin-bottom: 20px;
       }
+      .sum-card {
+        background: #f1f5f9;
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+      }
+      .sum-card.big {
+        grid-column: span 2;
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+      }
+      .sum-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .sum-val {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text-gelap);
+      }
+      .sum-val.green { color: #059669; }
+      .sum-val.blue { color: var(--biru); }
+
       .modal-actions {
         display: flex;
-        gap: 12px;
+        gap: 10px;
+        margin-top: 20px;
       }
       .btn-modal-yes {
-        flex: 1;
+        flex: 2;
         background: var(--biru);
-        padding: 12px;
-        border-radius: 8px;
+        padding: 14px;
+        border-radius: 12px;
         color: white;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 16px;
         border: none;
         cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        transition: transform 0.1s;
       }
+      .btn-modal-yes:active { transform: scale(0.98); }
+      
       .btn-modal-no {
         flex: 1;
         background: #f1f5f9;
         color: #64748b;
-        padding: 12px;
-        border-radius: 8px;
+        padding: 14px;
+        border-radius: 12px;
         font-weight: 600;
         border: none;
         cursor: pointer;
+        font-size: 14px;
       }
-      .btn-modal-no:hover {
-        background: #e2e8f0;
-      }
+      .btn-modal-no:hover { background: #e2e8f0; }
 
       /* ===== PRINT MEDIA QUERY (AGAR TAMPIL PDF RAPI) ===== */
       @media print {
@@ -714,7 +740,7 @@
           background: white;
           padding: 0;
           margin: 0;
-          font-family: "Courier Prime", monospace; /* Gunakan font struk saat print */
+          font-family: "Courier Prime", monospace;
         }
         .app, .no-print, .tabs, .header, .toast-container, .modal-overlay { 
           display: none !important; 
@@ -724,7 +750,7 @@
           margin: 0; 
           padding: 0; 
           width: 100%;
-          max-width: 80mm; /* Paksa lebar thermal */
+          max-width: 80mm;
           position: absolute;
           top: 0;
           left: 0;
@@ -733,7 +759,6 @@
           border: none; 
           padding: 0; 
         }
-        /* Pastikan background colors tercetak (untuk border/garis) */
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
@@ -827,7 +852,7 @@
 
             <input type="number" id="bayar" placeholder="Uang dari pembeli" oninput="hitungKembali()" />
             
-            <!-- PERBAIKAN: Kembalian diperbesar -->
+            <!-- Kembalian diperbesar -->
             <div class="total-box hijau">
               <div class="label">KEMBALIAN</div>
               <div class="angka" style="font-size: 36px; line-height: 1;">Rp <span id="kembalian">0</span></div>
@@ -1045,33 +1070,34 @@
       </div>
     </div>
 
-    <!-- POPUP MODAL CONFIRMATION -->
+    <!-- POPUP MODAL CONFIRMATION (NEW DESIGN) -->
     <div id="modalKonfirmasi" class="modal-overlay">
       <div class="modal-box">
-        <span class="modal-icon">💸</span>
-        <div class="modal-title">Transaksi Berhasil!</div>
-        
-        <div class="modal-detail-row">
-          <span>Total Bayar</span>
-          <span class="val" id="modalTotalBayar">Rp 0</span>
-        </div>
-        <div class="modal-detail-row">
-          <span>Uang Diterima</span>
-          <span class="val" id="modalUangDiterima">Rp 0</span>
-        </div>
-        <div class="modal-detail-row">
-          <span>Kembalian</span>
-          <span class="val" id="modalKembalian">Rp 0</span>
+        <div class="modal-header">
+          <span class="modal-icon">✅</span>
+          <div class="modal-title">TRANSAKSI SUKSES!</div>
         </div>
         
-        <div class="modal-divider"></div>
-        <div class="modal-total">Laba: <span id="modalLaba">Rp 0</span></div>
-        
-        <div style="margin-bottom:16px; font-size:14px; color:#64748b;">Cetak struk sekarang?</div>
-        
-        <div class="modal-actions">
-          <button class="btn-modal-yes" onclick="lanjutkanCetak(true)">✅ Ya, Cetak / PDF</button>
-          <button class="btn-modal-no" onclick="lanjutkanCetak(false)">❌ Tidak</button>
+        <div class="modal-body">
+          <div class="summary-grid">
+            <div class="sum-card">
+              <div class="sum-label">Total Bayar</div>
+              <div class="sum-val blue" id="modalTotalBayar">Rp 0</div>
+            </div>
+            <div class="sum-card">
+              <div class="sum-label">Uang Diterima</div>
+              <div class="sum-val" id="modalUangDiterima">Rp 0</div>
+            </div>
+            <div class="sum-card big">
+              <div class="sum-label">KEMBALIAN</div>
+              <div class="sum-val green" id="modalKembalian" style="font-size: 28px;">Rp 0</div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-modal-yes" onclick="lanjutkanCetak(true)">✅ Cetak / PDF</button>
+            <button class="btn-modal-no" onclick="lanjutkanCetak(false)">Tidak</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1085,7 +1111,6 @@
       let dbTransaksi = JSON.parse(localStorage.getItem("transaksi") || "[]");
       let dbPengaturan = JSON.parse(localStorage.getItem("pengaturan") || "{}");
 
-      // Default Pengaturan jika kosong
       if (!dbPengaturan.namaToko) dbPengaturan.namaToko = "TOKO KASIR PRO";
       if (!dbPengaturan.alamatToko) dbPengaturan.alamatToko = "Jl. Merdeka No. 45, Jakarta Selatan";
       if (!dbPengaturan.teleponToko) dbPengaturan.teleponToko = "0812-3456-7890";
@@ -1098,12 +1123,10 @@
       let debounceTimer = null;
       const SCAN_DELAY_MS = 1000;
 
-      // Variabel dropdown pencarian
       let barangTerpilihCari = null;
       let indeksDiangkat = -1;
       let filterKategoriAktif = "";
 
-      // Data awal dummy jika barang kosong
       if (dbBarang.length === 0) {
         dbBarang = [
           { barcode: "8992761120015", nama: "Indomie Goreng", kategori: "Makanan", hargaBeli: 2500, hargaJual: 3500, stok: 100 },
@@ -1113,7 +1136,6 @@
         simpanDb();
       }
 
-      // === FUNGSI UTILITY ===
       const DAFTAR_KATEGORI = [
         { nama: "Makanan", emoji: "🍜", kelas: "badge-makanan" },
         { nama: "Minuman", emoji: "🥤", kelas: "badge-minuman" },
@@ -1143,14 +1165,12 @@
         localStorage.setItem("transaksi", JSON.stringify(dbTransaksi));
         localStorage.setItem("pengaturan", JSON.stringify(dbPengaturan));
         
-        // Update UI Elements real-time
         updateHeaderApp();
         renderOpsiKategori();
         renderBarang();
         renderPilihBarang();
         renderLaporan();
         
-        // Update input values in settings form
         document.getElementById("setNamaToko").value = dbPengaturan.namaToko;
         document.getElementById("setAlamatToko").value = dbPengaturan.alamatToko;
         document.getElementById("setTeleponToko").value = dbPengaturan.teleponToko;
@@ -1161,7 +1181,6 @@
         document.getElementById("headerAppName").innerText = dbPengaturan.namaToko || "KASIR PRO";
       }
 
-      // === LOGIKA TAB & UI ===
       function gantiTab(tab) {
         stopScanKamera();
         tutupDropdown();
@@ -1179,7 +1198,6 @@
         }
       }
 
-      // === LOGIKA PENGATURAN ===
       function simpanPengaturan() {
         dbPengaturan.namaToko = document.getElementById("setNamaToko").value;
         dbPengaturan.alamatToko = document.getElementById("setAlamatToko").value;
@@ -1252,7 +1270,6 @@
         }
       }
 
-      // === LOGIKA KASIR & SCANNER ===
       function beep() {
         try {
           let ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1344,7 +1361,6 @@
         }
       }
 
-      // === PENCARIAN MANUAL ===
       const inputCari = document.getElementById("cariManual");
       const dropdown = document.getElementById("dropdownHasil");
       const qtyWrap = document.getElementById("qtyInlineWrap");
@@ -1519,7 +1535,6 @@
         document.getElementById("kembalian").innerText = kembali > 0 ? kembali.toLocaleString() : 0;
       }
 
-      // === FUNGSI TRANSAKSI BARU (DENGAN POPUP) ===
       function selesaiTransaksi() {
         if (struk.length === 0) return alert("Struk masih kosong");
         let totalJual = struk.reduce((a, b) => a + b.hargaJual * b.qty, 0);
@@ -1560,7 +1575,6 @@
         document.getElementById("modalTotalBayar").innerText = "Rp " + total.toLocaleString();
         document.getElementById("modalUangDiterima").innerText = "Rp " + bayar.toLocaleString();
         document.getElementById("modalKembalian").innerText = "Rp " + kembali.toLocaleString();
-        document.getElementById("modalLaba").innerText = "Rp " + laba.toLocaleString();
         
         let modal = document.getElementById("modalKonfirmasi");
         modal.classList.add("show");
@@ -1571,18 +1585,25 @@
         modal.classList.remove("show");
 
         if (isCetak) {
-          // 1. Paksa struk tampil dulu di layar agar browser siap merender isinya
           let elemenStruk = document.getElementById("cetakStruk");
+          
+          // PERBAIKAN UTAMA:
+          // 1. Paksa elemen muncul dengan posisi absolut di atas layar
           elemenStruk.style.display = "block";
+          elemenStruk.style.top = "0";
+          elemenStruk.style.left = "0";
+          elemenStruk.style.zIndex = "99999";
 
-          // 2. Beri jeda waktu 500ms agar data benar-benar siap dicetak
+          // 2. Beri jeda agar browser merender struk
           setTimeout(function () {
+            // 3. Trigger print
             window.print();
             
-            // 3. Setelah dialog print ditutup, sembunyikan lagi struknya
+            // 4. Setelah print dialog muncul, sembunyikan kembali setelah jeda waktu
             setTimeout(function () {
               elemenStruk.style.display = "none";
-            }, 1000); // Waktu tambahan setelah print
+              elemenStruk.style.zIndex = "";
+            }, 2000); // Waktu cukup lama agar user melihat preview
           }, 500);
         }
         
@@ -1590,7 +1611,6 @@
       }
 
       function siapkanCetak(total, bayar) {
-        // Ambil data pengaturan TERBARU dari memory
         document.getElementById("printStoreName").innerText = dbPengaturan.namaToko.toUpperCase();
         document.getElementById("printStoreAddress").innerHTML = dbPengaturan.alamatToko + "<br/>Telp: " + dbPengaturan.teleponToko;
         document.getElementById("printFooterMsg").innerText = dbPengaturan.footerStruk;
@@ -1639,7 +1659,6 @@
         document.getElementById("scanInput").focus();
       }
 
-      // === FITUR BARANG ===
       function simpanBarang() {
         let barcode = document.getElementById("barcode").value.trim();
         let nama = document.getElementById("nama").value.trim();
@@ -1816,7 +1835,6 @@
         }
       }
 
-      // === LAPORAN & EXPORT ===
       function renderLaporan() {
         let tbody = document.querySelector("#tabelLaporan tbody");
         tbody.innerHTML = "";
@@ -1860,7 +1878,6 @@
         if (e.key === "Enter") { e.preventDefault(); tambahManual(); }
       });
 
-      // Init
       renderStruk();
       simpanDb();
     </script>
