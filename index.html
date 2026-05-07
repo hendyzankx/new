@@ -826,10 +826,13 @@
             </div>
 
             <input type="number" id="bayar" placeholder="Uang dari pembeli" oninput="hitungKembali()" />
+            
+            <!-- PERBAIKAN: Kembalian diperbesar -->
             <div class="total-box hijau">
               <div class="label">KEMBALIAN</div>
-              <div class="angka">Rp <span id="kembalian">0</span></div>
+              <div class="angka" style="font-size: 36px; line-height: 1;">Rp <span id="kembalian">0</span></div>
             </div>
+
             <button class="btn-selesai" onclick="selesaiTransaksi()">SELESAI & CETAK</button>
             <button onclick="resetStruk()" style="background: #64748b !important">Reset Struk</button>
           </div>
@@ -980,7 +983,7 @@
           </div>
         </div>
 
-        <!-- AREA CETAK STRUK (Hanya muncul saat Print/Save PDF) -->
+        <!-- AREA CETAK STRUK (BERSIH DARI LABA) -->
         <div id="cetakStruk">
           <div class="paper">
             <!-- Header -->
@@ -1155,7 +1158,6 @@
       }
 
       function updateHeaderApp() {
-        // Fungsi khusus untuk mengubah header aplikasi dan elemen statis lainnya
         document.getElementById("headerAppName").innerText = dbPengaturan.namaToko || "KASIR PRO";
       }
 
@@ -1170,7 +1172,6 @@
         document.getElementById(tabId[tab]).classList.add("aktif");
         if (tab === "kasir") setTimeout(() => document.getElementById("scanInput").focus(), 100);
         if (tab === "pengaturan") {
-           // Refresh input values saat buka tab
            document.getElementById("setNamaToko").value = dbPengaturan.namaToko;
            document.getElementById("setAlamatToko").value = dbPengaturan.alamatToko;
            document.getElementById("setTeleponToko").value = dbPengaturan.teleponToko;
@@ -1185,7 +1186,7 @@
         dbPengaturan.teleponToko = document.getElementById("setTeleponToko").value;
         dbPengaturan.footerStruk = document.getElementById("setFooterStruk").value;
         
-        simpanDb(); // Ini akan memicu updateHeaderApp()
+        simpanDb(); 
         
         tampilkanToast("Pengaturan Disimpan", "Nama toko dan profil struk berhasil diperbarui.");
       }
@@ -1199,7 +1200,6 @@
         a.click();
       }
 
-      // Listener RESTORE
       document.getElementById('fileRestore').addEventListener('change', function(e) {
         let file = e.target.files[0];
         let statusDiv = document.getElementById("restoreStatus");
@@ -1216,10 +1216,10 @@
                 dbPengaturan = data.pengaturan;
                 dbBarang = data.barang;
                 dbTransaksi = data.transaksi;
-                simpanDb(); // Update header dll
+                simpanDb(); 
                 alert("✅ Restore Data Berhasil!");
                 statusDiv.innerText = "Restore sukses pada " + new Date().toLocaleTimeString();
-                document.getElementById('fileRestore').value = ""; // Reset
+                document.getElementById('fileRestore').value = ""; 
               } else {
                 statusDiv.innerText = "Restore dibatalkan.";
               }
@@ -1540,10 +1540,8 @@
           return;
         }
 
-        // 1. Kurangi Stok
         struk.forEach((s) => { let b = dbBarang.find((x) => x.barcode === s.barcode); if (b) b.stok -= s.qty; });
         
-        // 2. Simpan Transaksi
         dbTransaksi.push({
           waktu: new Date().toLocaleString("id-ID"),
           totalJual: totalJual,
@@ -1553,10 +1551,8 @@
         });
         simpanDb();
 
-        // 3. Persiapkan data cetak (jika nanti dipilih)
         siapkanCetak(totalJual, bayar);
 
-        // 4. Tampilkan Popup Konfirmasi
         konfirmasiPopup(totalJual, bayar, bayar - totalJual, laba);
       }
 
@@ -1575,14 +1571,26 @@
         modal.classList.remove("show");
 
         if (isCetak) {
-          window.print();
+          // 1. Paksa struk tampil dulu di layar agar browser siap merender isinya
+          let elemenStruk = document.getElementById("cetakStruk");
+          elemenStruk.style.display = "block";
+
+          // 2. Beri jeda waktu 500ms agar data benar-benar siap dicetak
+          setTimeout(function () {
+            window.print();
+            
+            // 3. Setelah dialog print ditutup, sembunyikan lagi struknya
+            setTimeout(function () {
+              elemenStruk.style.display = "none";
+            }, 1000); // Waktu tambahan setelah print
+          }, 500);
         }
         
         resetStruk();
       }
 
       function siapkanCetak(total, bayar) {
-        // Ambil data pengaturan TERBARU dari memory, bukan dari DOM
+        // Ambil data pengaturan TERBARU dari memory
         document.getElementById("printStoreName").innerText = dbPengaturan.namaToko.toUpperCase();
         document.getElementById("printStoreAddress").innerHTML = dbPengaturan.alamatToko + "<br/>Telp: " + dbPengaturan.teleponToko;
         document.getElementById("printFooterMsg").innerText = dbPengaturan.footerStruk;
