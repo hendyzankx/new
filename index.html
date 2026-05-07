@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aplikasi Kasir Modern</title>
+    <title>Aplikasi Kasir Modern + Scanner</title>
     <meta name="theme-color" content="#4f46e5">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- Ikon (Menggunakan FontAwesome CDN untuk keperluan demo) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <style>
         :root {
@@ -43,7 +43,6 @@
             overflow: hidden;
         }
 
-        /* --- Layout --- */
         .app-container {
             display: flex;
             flex: 1;
@@ -51,7 +50,7 @@
             overflow: hidden;
         }
 
-        /* Sidebar / Bottom Nav Logic */
+        /* --- Layout --- */
         .sidebar {
             width: 250px;
             background: var(--surface);
@@ -81,10 +80,6 @@
             color: white;
         }
 
-        .nav-item:hover:not(.active) {
-            background-color: #f1f5f9;
-        }
-
         .main-content {
             flex: 1;
             overflow-y: auto;
@@ -92,7 +87,6 @@
             position: relative;
         }
 
-        /* --- Sections --- */
         .section {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -107,11 +101,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1, h2, h3 {
-            margin-bottom: 1rem;
-            color: var(--text-main);
-        }
-
         /* --- Cards & Grid --- */
         .card {
             background: var(--surface);
@@ -124,8 +113,7 @@
 
         .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-        .grid-4 { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
-
+        
         /* --- POS Layout --- */
         .pos-container {
             display: grid;
@@ -181,11 +169,6 @@
             color: var(--primary);
             font-weight: 700;
             font-size: 0.95rem;
-        }
-
-        .product-stock {
-            font-size: 0.75rem;
-            color: var(--text-sub);
         }
 
         /* Cart Section */
@@ -278,18 +261,38 @@
         th { background: #f8fafc; font-weight: 600; color: var(--text-sub); }
         
         /* --- Search Bar --- */
-        .search-bar {
+        .search-container {
             position: relative;
             margin-bottom: 1rem;
+            display: flex;
+            gap: 10px;
         }
-        .search-bar i {
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+        }
+        .search-wrapper i {
             position: absolute;
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-sub);
         }
-        .search-bar input { padding-left: 36px; }
+        .search-wrapper input { padding-left: 36px; }
+        
+        .scan-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
 
         /* --- Badge --- */
         .badge {
@@ -300,26 +303,6 @@
         }
         .bg-green { background: #dcfce7; color: #166534; }
         .bg-red { background: #fee2e2; color: #991b1b; }
-
-        /* --- Floating Action Button (FAB) for Mobile --- */
-        .fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-            font-size: 1.5rem;
-            z-index: 100;
-            cursor: pointer;
-            border: none;
-        }
 
         /* --- Toast Notification --- */
         .toast {
@@ -360,9 +343,13 @@
             padding: 1.5rem;
             transform: scale(0.9);
             transition: transform 0.2s;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .modal-overlay.open .modal { transform: scale(1); }
 
+        #reader { width: 100%; border-radius: 8px; overflow: hidden; }
+        
         /* --- Mobile Navigation --- */
         .mobile-nav {
             display: none;
@@ -409,7 +396,6 @@
             }
             .cart-panel.open { transform: translateY(0); }
             
-            /* Cart toggle button for mobile */
             .mobile-cart-toggle {
                 display: flex !important;
             }
@@ -445,17 +431,10 @@
             align-items: center;
             justify-content: center;
         }
-
-        /* Receipt View (Hidden from screen usually, used for printing) */
-        #receipt-preview {
-            font-family: 'Courier New', Courier, monospace;
-            display: none;
-        }
     </style>
 </head>
 <body>
 
-    <!-- App Container -->
     <div class="app-container">
         <!-- Desktop Sidebar -->
         <aside class="sidebar">
@@ -478,17 +457,21 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
             
-            <!-- SECTION: POS (Point of Sale) -->
+            <!-- SECTION: POS -->
             <section id="pos" class="section active">
                 <div class="pos-container">
                     <!-- Product Area -->
                     <div>
-                        <div class="search-bar">
-                            <i class="fa-solid fa-search"></i>
-                            <input type="text" id="pos-search" placeholder="Cari produk..." oninput="renderPosProducts()">
+                        <div class="search-container">
+                            <div class="search-wrapper">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" id="pos-search" placeholder="Cari nama atau kode..." oninput="renderPosProducts()">
+                            </div>
+                            <div class="scan-btn" onclick="openScannerModal()" title="Scan Barcode">
+                                <i class="fa-solid fa-barcode"></i>
+                            </div>
                         </div>
                         
                         <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 5px;">
@@ -503,7 +486,7 @@
                         </div>
                     </div>
 
-                    <!-- Cart Area (Desktop Visible, Mobile Modal) -->
+                    <!-- Cart Area -->
                     <div class="cart-panel" id="cart-panel">
                         <div class="cart-header">
                             <span>Keranjang</span>
@@ -535,7 +518,7 @@
                 </div>
             </section>
 
-            <!-- SECTION: PRODUCTS (Inventory) -->
+            <!-- SECTION: PRODUCTS -->
             <section id="products" class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h2>Daftar Produk</h2>
@@ -547,7 +530,7 @@
                     <table id="product-table">
                         <thead>
                             <tr>
-                                <th>Nama</th>
+                                <th>Kode/Nama</th>
                                 <th>Kategori</th>
                                 <th>Harga</th>
                                 <th>Stok</th>
@@ -564,9 +547,11 @@
             <!-- SECTION: HISTORY -->
             <section id="history" class="section">
                 <h2>Riwayat Transaksi</h2>
-                <div class="search-bar">
-                    <i class="fa-solid fa-search"></i>
-                    <input type="text" id="history-search" placeholder="Cari No. Resi..." oninput="renderHistory()">
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="history-search" placeholder="Cari No. Resi..." oninput="renderHistory()">
+                    </div>
                 </div>
                 <div class="card table-container">
                     <table id="history-table">
@@ -607,9 +592,7 @@
                 
                 <div class="card">
                     <h3>Grafik Penjualan (Top Produk)</h3>
-                    <div style="display: flex; flex-direction: column; gap: 10px;" id="top-products-chart">
-                        <!-- Simple CSS Chart bars -->
-                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;" id="top-products-chart"></div>
                 </div>
             </section>
 
@@ -653,6 +636,10 @@
             <div class="form-group">
                 <label>Nama Produk</label>
                 <input type="text" id="p-name">
+            </div>
+            <div class="form-group">
+                <label>Kode Barcode (Opsional)</label>
+                <input type="text" id="p-barcode" placeholder="Scan atau ketik kode...">
             </div>
             <div class="form-group">
                 <label>Kategori</label>
@@ -709,12 +696,41 @@
         </div>
     </div>
 
-    <!-- Hidden Receipt for Print/PDF Generation -->
-    <div id="receipt-preview"></div>
+    <!-- Modal: Scanner -->
+    <div id="scanner-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 style="margin-bottom: 1rem;">Scan Barcode</h3>
+            <div id="reader"></div>
+            <div id="scan-result" style="margin-top: 10px; text-align: center; font-weight: bold; color: var(--primary);"></div>
+            <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="closeScannerModal()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Modal: Print Receipt Confirmation (NEW) -->
+    <div id="print-modal" class="modal-overlay">
+        <div class="modal" style="text-align: center;">
+            <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <h3>Transaksi Berhasil!</h3>
+            <p style="color: var(--text-sub); margin-bottom: 2rem;">Apakah Anda ingin mencetak struk pembayaran?</p>
+            
+            <div style="display: flex; gap: 10px; flex-direction: column;">
+                <button class="btn btn-primary" onclick="confirmPrint(true)">
+                    <i class="fa-solid fa-print"></i> Ya, Cetak Struk
+                </button>
+                <button class="btn btn-secondary" onclick="confirmPrint(false)">
+                    <i class="fa-solid fa-ban"></i> Tidak, Selesai
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // --- State Management ---
         const DB_KEYS = { PRODUCTS: 'kasir_products', TRANSACTIONS: 'kasir_transactions' };
+        let html5QrcodeScanner = null;
+        let pendingTransaction = null; // Variable to hold transaction data temporarily
         
         let state = {
             products: [],
@@ -723,18 +739,16 @@
             activeCategory: 'all'
         };
 
-        // --- Initialization ---
         function init() {
             loadData();
             
-            // Seed data if empty (for demo purpose)
             if (state.products.length === 0) {
                 state.products = [
-                    { id: 1, name: "Nasi Goreng Spesial", category: "makanan", price: 25000, stock: 50 },
-                    { id: 2, name: "Ayam Bakar Madu", category: "makanan", price: 30000, stock: 30 },
-                    { id: 3, name: "Es Teh Manis", category: "minuman", price: 5000, stock: 100 },
-                    { id: 4, name: "Kopi Susu Gula Aren", category: "minuman", price: 18000, stock: 40 },
-                    { id: 5, name: "Kentang Goreng", category: "snack", price: 15000, stock: 20 }
+                    { id: 1, name: "Nasi Goreng Spesial", category: "makanan", price: 25000, stock: 50, barcode: "8991001" },
+                    { id: 2, name: "Ayam Bakar Madu", category: "makanan", price: 30000, stock: 30, barcode: "8991002" },
+                    { id: 3, name: "Es Teh Manis", category: "minuman", price: 5000, stock: 100, barcode: "8992001" },
+                    { id: 4, name: "Kopi Susu Gula Aren", category: "minuman", price: 18000, stock: 40, barcode: "8992002" },
+                    { id: 5, name: "Kentang Goreng", category: "snack", price: 15000, stock: 20, barcode: "8993001" }
                 ];
                 saveData();
             }
@@ -757,13 +771,57 @@
             localStorage.setItem(DB_KEYS.TRANSACTIONS, JSON.stringify(state.transactions));
         }
 
-        // --- Navigation ---
+        // --- Scanner Logic ---
+        function openScannerModal() {
+            document.getElementById('scanner-modal').classList.add('open');
+            document.getElementById('scan-result').innerText = "";
+            
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5Qrcode("reader");
+            }
+
+            const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+            
+            html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(err => {
+                console.error("Error starting scanner", err);
+                showToast("Gagal membuka kamera. Pastikan izinkan akses kamera.");
+            });
+        }
+
+        function closeScannerModal() {
+            document.getElementById('scanner-modal').classList.remove('open');
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    // Scanner stopped
+                }).catch(err => {
+                    console.error("Failed to stop scanner", err);
+                });
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            const product = state.products.find(p => p.barcode === decodedText || p.id.toString() === decodedText);
+            
+            if (product) {
+                addToCart(product.id);
+                document.getElementById('scan-result').innerText = `Ditemukan: ${product.name}`;
+                document.getElementById('scan-result').style.color = "var(--success)";
+                setTimeout(() => {
+                    closeScannerModal();
+                }, 800);
+            } else {
+                document.getElementById('scan-result').innerText = "Produk tidak ditemukan!";
+                document.getElementById('scan-result').style.color = "var(--danger)";
+            }
+        }
+
+        // --- Navigation & POS Logic ---
         function navigate(screenId) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             
             document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => el.classList.remove('active'));
-            // Highlight nav items
             const navs = document.querySelectorAll(`[onclick="navigate('${screenId}')"]`);
             navs.forEach(el => el.classList.add('active'));
 
@@ -771,15 +829,11 @@
             if (screenId === 'history') renderHistory();
             if (screenId === 'reports') renderReports();
             
-            // Close mobile cart if switching tabs
             document.getElementById('cart-panel').classList.remove('open');
         }
 
-        function updateNav() {
-            // Helper to ensure UI sync
-        }
+        function updateNav() { }
 
-        // --- POS Logic ---
         function formatCurrency(num) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
         }
@@ -792,14 +846,14 @@
             const filtered = state.products.filter(p => {
                 const matchCat = state.activeCategory === 'all' || p.category === state.activeCategory;
                 const matchName = p.name.toLowerCase().includes(search);
-                return matchCat && matchName;
+                const matchCode = (p.barcode && p.barcode.includes(search));
+                return matchCat && (matchName || matchCode);
             });
 
             filtered.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'product-card';
                 div.onclick = () => addToCart(p.id);
-                // Using seed for consistent placeholder images
                 div.innerHTML = `
                     <div>
                         <img src="https://picsum.photos/seed/${p.id}/200/200" class="product-img" alt="${p.name}">
@@ -821,8 +875,6 @@
 
         function addToCart(id) {
             const product = state.products.find(p => p.id === id);
-            
-            // Check Stock
             const cartItem = state.cart.find(c => c.id === id);
             const currentQty = cartItem ? cartItem.qty : 0;
             
@@ -842,7 +894,6 @@
         function renderCart() {
             const container = document.getElementById('cart-items');
             container.innerHTML = '';
-            
             let subtotal = 0;
 
             if (state.cart.length === 0) {
@@ -867,7 +918,6 @@
                 container.appendChild(div);
             });
 
-            // Calculate Discount & Total
             const discountPercent = parseFloat(document.getElementById('cart-discount').value) || 0;
             const discountVal = subtotal * (discountPercent / 100);
             const total = subtotal - discountVal;
@@ -881,8 +931,6 @@
         function updateQty(index, change) {
             const item = state.cart[index];
             const newQty = item.qty + change;
-            
-            // Check stock real
             const product = state.products.find(p => p.id === item.id);
             
             if (newQty > product.stock) {
@@ -899,101 +947,7 @@
         }
 
         function toggleMobileCart() {
-            const panel = document.getElementById('cart-panel');
-            panel.classList.toggle('open');
-        }
-
-        // --- Checkout Logic ---
-        function openCheckoutModal() {
-            if (state.cart.length === 0) {
-                showToast("Keranjang kosong!");
-                return;
-            }
-            
-            const totalStr = document.getElementById('cart-total').innerText;
-            document.getElementById('checkout-total').innerText = totalStr;
-            document.getElementById('cash-received').value = '';
-            document.getElementById('checkout-change').innerText = 'Rp 0';
-            document.getElementById('checkout-modal').classList.add('open');
-            toggleCashInput(); // Ensure correct input state
-        }
-
-        function toggleCashInput() {
-            const method = document.getElementById('payment-method').value;
-            const group = document.getElementById('cash-input-group');
-            if (method === 'tunai') {
-                group.style.display = 'block';
-            } else {
-                group.style.display = 'none';
-                document.getElementById('checkout-change').innerText = '-';
-            }
-        }
-
-        function calculateChange() {
-            const totalText = document.getElementById('checkout-total').innerText.replace(/[^0-9,-]+/g,"");
-            const total = parseInt(totalText);
-            const received = parseFloat(document.getElementById('cash-received').value) || 0;
-            const change = received - total;
-            
-            const el = document.getElementById('checkout-change');
-            if (change >= 0) {
-                el.innerText = formatCurrency(change);
-                el.style.color = 'var(--success)';
-            } else {
-                el.innerText = 'Kurang ' + formatCurrency(Math.abs(change));
-                el.style.color = 'var(--danger)';
-            }
-        }
-
-        function processPayment() {
-            const method = document.getElementById('payment-method').value;
-            if (method === 'tunai') {
-                const totalText = document.getElementById('checkout-total').innerText.replace(/[^0-9,-]+/g,"");
-                const total = parseInt(totalText);
-                const received = parseFloat(document.getElementById('cash-received').value) || 0;
-                
-                if (received < total) {
-                    showToast("Uang pembayaran kurang!");
-                    return;
-                }
-            }
-
-            // Create Transaction Record
-            const totalText = document.getElementById('checkout-total').innerText.replace(/[^0-9,-]+/g,"");
-            const total = parseInt(totalText);
-            
-            const transaction = {
-                id: 'TRX-' + Date.now(),
-                date: new Date().toISOString(),
-                items: [...state.cart],
-                total: total,
-                method: method,
-                discount: parseFloat(document.getElementById('cart-discount').value) || 0
-            };
-
-            // Update Stock
-            transaction.items.forEach(item => {
-                const prod = state.products.find(p => p.id === item.id);
-                if (prod) prod.stock -= item.qty;
-            });
-
-            // Save
-            state.transactions.unshift(transaction); // Add to top
-            saveData();
-            
-            // Reset UI
-            state.cart = [];
-            document.getElementById('cart-discount').value = 0;
-            renderCart();
-            renderPosProducts();
-            closeModal('checkout-modal');
-            
-            // Show Receipt Option
-            showToast("Transaksi Berhasil!");
-            
-            setTimeout(() => {
-                generateReceipt(transaction);
-            }, 500);
+            document.getElementById('cart-panel').classList.toggle('open');
         }
 
         // --- Product Management ---
@@ -1004,7 +958,10 @@
             state.products.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${p.name}</td>
+                    <td>
+                        <div>${p.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-sub);">Barcode: ${p.barcode || '-'}</div>
+                    </td>
                     <td><span class="badge bg-green">${p.category}</span></td>
                     <td>${formatCurrency(p.price)}</td>
                     <td>${p.stock}</td>
@@ -1024,6 +981,7 @@
                 document.getElementById('modal-product-title').innerText = 'Edit Produk';
                 document.getElementById('p-id').value = p.id;
                 document.getElementById('p-name').value = p.name;
+                document.getElementById('p-barcode').value = p.barcode || '';
                 document.getElementById('p-category').value = p.category;
                 document.getElementById('p-price').value = p.price;
                 document.getElementById('p-stock').value = p.stock;
@@ -1031,6 +989,7 @@
                 document.getElementById('modal-product-title').innerText = 'Tambah Produk';
                 document.getElementById('p-id').value = '';
                 document.getElementById('p-name').value = '';
+                document.getElementById('p-barcode').value = '';
                 document.getElementById('p-price').value = '';
                 document.getElementById('p-stock').value = '';
             }
@@ -1039,6 +998,7 @@
         function saveProduct() {
             const id = document.getElementById('p-id').value;
             const name = document.getElementById('p-name').value;
+            const barcode = document.getElementById('p-barcode').value;
             const cat = document.getElementById('p-category').value;
             const price = parseInt(document.getElementById('p-price').value);
             const stock = parseInt(document.getElementById('p-stock').value);
@@ -1049,15 +1009,13 @@
             }
 
             if (id) {
-                // Edit
                 const idx = state.products.findIndex(p => p.id == id);
                 if (idx !== -1) {
-                    state.products[idx] = { id: parseInt(id), name, category: cat, price, stock };
+                    state.products[idx] = { id: parseInt(id), name, barcode, category: cat, price, stock };
                 }
             } else {
-                // Add
                 const newId = Date.now();
-                state.products.push({ id: newId, name, category: cat, price, stock });
+                state.products.push({ id: newId, name, barcode, category: cat, price, stock });
             }
 
             saveData();
@@ -1067,10 +1025,7 @@
             showToast("Produk tersimpan");
         }
 
-        function editProduct(id) {
-            openProductModal(id);
-        }
-
+        function editProduct(id) { openProductModal(id); }
         function deleteProduct(id) {
             if(confirm('Hapus produk ini?')) {
                 state.products = state.products.filter(p => p.id !== id);
@@ -1081,15 +1036,141 @@
             }
         }
 
-        // --- History & Reports ---
+        // --- Checkout Logic ---
+        function openCheckoutModal() {
+            if (state.cart.length === 0) { showToast("Keranjang kosong!"); return; }
+            const totalStr = document.getElementById('cart-total').innerText;
+            document.getElementById('checkout-total').innerText = totalStr;
+            document.getElementById('cash-received').value = '';
+            document.getElementById('checkout-change').innerText = 'Rp 0';
+            document.getElementById('checkout-modal').classList.add('open');
+            toggleCashInput();
+        }
+
+        function toggleCashInput() {
+            const method = document.getElementById('payment-method').value;
+            const group = document.getElementById('cash-input-group');
+            group.style.display = method === 'tunai' ? 'block' : 'none';
+            if (method !== 'tunai') document.getElementById('checkout-change').innerText = '-';
+        }
+
+        function calculateChange() {
+            const totalText = document.getElementById('checkout-total').innerText.replace(/[^0-9,-]+/g,"");
+            const total = parseInt(totalText);
+            const received = parseFloat(document.getElementById('cash-received').value) || 0;
+            const change = received - total;
+            const el = document.getElementById('checkout-change');
+            if (change >= 0) {
+                el.innerText = formatCurrency(change);
+                el.style.color = 'var(--success)';
+            } else {
+                el.innerText = 'Kurang ' + formatCurrency(Math.abs(change));
+                el.style.color = 'var(--danger)';
+            }
+        }
+
+        function processPayment() {
+            const method = document.getElementById('payment-method').value;
+            if (method === 'tunai') {
+                const totalText = document.getElementById('checkout-total').innerText.replace(/[^0-9,-]+/g,"");
+                const total = parseInt(totalText);
+                const received = parseFloat(document.getElementById('cash-received').value) || 0;
+                if (received < total) { showToast("Uang pembayaran kurang!"); return; }
+            }
+
+            const totalText = document.getElementById('checkout-total').innerText.replace(/[^0-9,-]+/g,"");
+            const total = parseInt(totalText);
+            
+            // Buat objek transaksi tapi simpan sementara
+            const transaction = {
+                id: 'TRX-' + Date.now(),
+                date: new Date().toISOString(),
+                items: [...state.cart],
+                total: total,
+                method: method,
+                discount: parseFloat(document.getElementById('cart-discount').value) || 0
+            };
+
+            // Kurangi Stok
+            transaction.items.forEach(item => {
+                const prod = state.products.find(p => p.id === item.id);
+                if (prod) prod.stock -= item.qty;
+            });
+
+            // Simpan transaksi ke state dan local storage
+            state.transactions.unshift(transaction);
+            saveData();
+
+            // Reset Cart & UI
+            state.cart = [];
+            document.getElementById('cart-discount').value = 0;
+            renderCart();
+            renderPosProducts();
+            closeModal('checkout-modal');
+
+            // Simpan data transaksi ke variabel global sementara untuk keperluan cetak
+            pendingTransaction = transaction;
+
+            // Tampilkan Modal Konfirmasi Cetak
+            document.getElementById('print-modal').classList.add('open');
+        }
+
+        function confirmPrint(doPrint) {
+            closeModal('print-modal');
+            
+            if (doPrint && pendingTransaction) {
+                generateReceipt(pendingTransaction);
+            }
+            
+            // Reset variabel sementara
+            pendingTransaction = null;
+        }
+
+        // --- Receipt & Reports ---
+        function generateReceipt(trx) {
+            const date = new Date(trx.date).toLocaleString('id-ID');
+            let itemsHtml = '';
+            trx.items.forEach(item => {
+                itemsHtml += `
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
+                        <span>${item.name} x${item.qty}</span>
+                        <span>${formatCurrency(item.price * item.qty)}</span>
+                    </div>
+                `;
+            });
+            const receiptContent = `
+                <div style="width: 300px; padding: 20px; font-family: monospace; margin: 0 auto; border: 1px solid #ddd;">
+                    <h3 style="text-align: center; margin-bottom: 5px;">TOKO KU</h3>
+                    <p style="text-align: center; font-size: 12px; margin-bottom: 15px;">Jl. Teknologi No. 1</p>
+                    <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 5px 0; margin-bottom: 10px; font-size: 12px;">
+                        <div>${date}</div>
+                        <div>ID: ${trx.id}</div>
+                        <div>Kasir: Admin</div>
+                    </div>
+                    ${itemsHtml}
+                    <div style="border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span>Total</span>
+                            <span style="font-weight: bold;">${formatCurrency(trx.total)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span>Metode</span>
+                            <span>${trx.method.toUpperCase()}</span>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; font-size: 12px;">Terima Kasih!</p>
+                </div>
+            `;
+            const win = window.open('', '', 'width=400,height=600');
+            win.document.write(receiptContent);
+            win.document.write('<script>setTimeout(() => { window.print(); window.close(); }, 500);<\/script>');
+        }
+
         function renderHistory() {
             const search = document.getElementById('history-search').value.toLowerCase();
             const tbody = document.querySelector('#history-table tbody');
             tbody.innerHTML = '';
-
-            const filtered = state.transactions.filter(t => 
-                t.id.toLowerCase().includes(search)
-            );
+            const filtered = state.transactions.filter(t => t.id.toLowerCase().includes(search));
 
             filtered.forEach(t => {
                 const date = new Date(t.date).toLocaleString('id-ID');
@@ -1117,43 +1198,27 @@
             const weekAgo = today - (7 * 24 * 60 * 60 * 1000);
             const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-            let dailyTotal = 0;
-            let weeklyTotal = 0;
-            let monthlyTotal = 0;
+            let dailyTotal = 0, weeklyTotal = 0, monthlyTotal = 0;
             let productCounts = {};
 
             state.transactions.forEach(t => {
                 const tDate = new Date(t.date).getTime();
-                
-                // Calc totals
                 if (tDate >= today) dailyTotal += t.total;
                 if (tDate >= weekAgo) weeklyTotal += t.total;
                 if (tDate >= monthStart) monthlyTotal += t.total;
-
-                // Calc top products
-                t.items.forEach(i => {
-                    productCounts[i.name] = (productCounts[i.name] || 0) + i.qty;
-                });
+                t.items.forEach(i => { productCounts[i.name] = (productCounts[i.name] || 0) + i.qty; });
             });
 
             document.getElementById('report-daily').innerText = formatCurrency(dailyTotal);
             document.getElementById('report-weekly').innerText = formatCurrency(weeklyTotal);
             document.getElementById('report-monthly').innerText = formatCurrency(monthlyTotal);
 
-            // Render simple bar chart
-            const sortedProducts = Object.entries(productCounts)
-                .sort((a,b) => b[1] - a[1])
-                .slice(0, 5); // Top 5
-
+            const sortedProducts = Object.entries(productCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
             const chartContainer = document.getElementById('top-products-chart');
             chartContainer.innerHTML = '';
-
-            if (sortedProducts.length === 0) {
-                chartContainer.innerHTML = '<div style="color:var(--text-sub); text-align:center;">Belum ada data penjualan</div>';
-            }
-
+            if (sortedProducts.length === 0) chartContainer.innerHTML = '<div style="color:var(--text-sub); text-align:center;">Belum ada data penjualan</div>';
+            
             const maxVal = sortedProducts.length > 0 ? sortedProducts[0][1] : 1;
-
             sortedProducts.forEach(([name, count]) => {
                 const percent = (count / maxVal) * 100;
                 const row = document.createElement('div');
@@ -1170,68 +1235,15 @@
             });
         }
 
-        // --- Receipt Generation ---
-        function generateReceipt(trx) {
-            const date = new Date(trx.date).toLocaleString('id-ID');
-            let itemsHtml = '';
-            
-            trx.items.forEach(item => {
-                itemsHtml += `
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
-                        <span>${item.name} x${item.qty}</span>
-                        <span>${formatCurrency(item.price * item.qty)}</span>
-                    </div>
-                `;
-            });
-
-            const receiptContent = `
-                <div style="width: 300px; padding: 20px; font-family: monospace; margin: 0 auto; border: 1px solid #ddd;">
-                    <h3 style="text-align: center; margin-bottom: 5px;">TOKO KU</h3>
-                    <p style="text-align: center; font-size: 12px; margin-bottom: 15px;">Jl. Teknologi No. 1</p>
-                    <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 5px 0; margin-bottom: 10px; font-size: 12px;">
-                        <div>${date}</div>
-                        <div>ID: ${trx.id}</div>
-                        <div>Kasir: Admin</div>
-                    </div>
-                    ${itemsHtml}
-                    <div style="border-top: 1px dashed #000; margin-top: 10px; padding-top: 10px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
-                            <span>Total</span>
-                            <span style="font-weight: bold;">${formatCurrency(trx.total)}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
-                            <span>Metode</span>
-                            <span>${trx.method.toUpperCase()}</span>
-                        </div>
-                    </div>
-                    <p style="text-align: center; margin-top: 20px; font-size: 12px;">Terima Kasih!</p>
-                </div>
-            `;
-
-            // Show in modal (simplified for this demo, normally opens new window)
-            // Using a temporary print window
-            const win = window.open('', '', 'width=400,height=600');
-            win.document.write(receiptContent);
-            win.document.write('<script>setTimeout(() => { window.print(); window.close(); }, 500);<\/script>');
-        }
-
-        // --- Utilities ---
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-        }
-
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // Run App
         window.addEventListener('DOMContentLoaded', init);
-
     </script>
 </body>
 </html>
