@@ -1007,9 +1007,11 @@
               Gunakan fitur ini untuk memindahkan data ke HP lain atau menyimpan
               cadangan data.
             </p>
-            <button onclick="backupData()" style="margin-bottom: 10px">
-              📥 Download Backup (.JSON)
-            </button>
+           <button id="btnRestore" onclick="restoreData()" style="margin-top: 10px">
+  📤 Upload & Restore
+</button>
+           
+            
 
             <div style="border-top: 1px dashed #cbd5e1; margin: 15px 0"></div>
 
@@ -1294,38 +1296,40 @@
         a.click();
       }
 
-      function restoreData() {
-        let fileInput = document.getElementById("fileRestore");
-        let file = fileInput.files[0];
-        if (!file) return alert("Pilih file backup terlebih dahulu!");
+function restoreData() {
+  // Memicu klik pada input file secara terprogram
+  document.getElementById('fileRestore').click();
+}
 
-        let reader = new FileReader();
-        reader.onload = function (e) {
-          try {
-            let data = JSON.parse(e.target.result);
-            if (data.pengaturan && data.barang && data.transaksi) {
-              if (
-                confirm(
-                  "Data backup akan menimpa data yang ada sekarang. Lanjutkan?",
-                )
-              ) {
-                dbPengaturan = data.pengaturan;
-                dbBarang = data.barang;
-                dbTransaksi = data.transaksi;
-                simpanDb();
-                alert("Restore Data Berhasil!");
-                fileInput.value = ""; // Reset input file
-              }
-            } else {
-              alert("Format file salah atau rusak.");
-            }
-          } catch (err) {
-            alert("Gagal membaca file JSON. Pastikan file benar.");
-          }
-        };
-        reader.readAsText(file);
+// Listener khusus untuk membaca file
+document.getElementById('fileRestore').addEventListener('change', function(e) {
+  let file = e.target.files[0];
+  if (!file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      let data = JSON.parse(evt.target.result);
+      // Validasi struktur data
+      if (data.pengaturan && data.barang && data.transaksi) {
+        if (confirm("Data backup akan menimpa data yang ada sekarang. Lanjutkan?")) {
+          dbPengaturan = data.pengaturan;
+          dbBarang = data.barang;
+          dbTransaksi = data.transaksi;
+          simpanDb();
+          alert("✅ Restore Data Berhasil!");
+          e.target.value = ""; // Reset input file agar bisa pilih file yang sama lagi kalau perlu
+        }
+      } else {
+        alert("❌ Format file salah atau rusak. Pastikan file backup berasal dari aplikasi ini.");
       }
-
+    } catch (err) {
+      console.error(err);
+      alert("❌ Gagal membaca file JSON. Pastikan file benar.");
+    }
+  };
+  reader.readAsText(file);
+});
       function hapusData(tipe) {
         if (tipe === "barang") {
           if (
@@ -1524,11 +1528,21 @@
       inputCari.addEventListener("keydown", function (e) {
         let items = dropdown.querySelectorAll(".dd-item");
         if (!items.length) return;
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          indeksDiangkat = Math.min(indeksDiangkat + 1, items.length - 1);
-          updateDiangkat(items);
-        } else if (e.key === "ArrowUp") {
+       if (e.key === "ArrowDown") {
+  e.preventDefault();
+  // Cek apakah dropdown sedang muncul
+  if (dropdown.classList.contains("show")) {
+    indeksDiangkat = Math.min(indeksDiangkat + 1, items.length - 1);
+    updateDiangkat(items);
+  } else {
+    // Jika dropdown belum muncul, munculkan dulu dengan men-trigger input
+    triggerCariManual(); 
+  }
+}
+       
+       
+       
+         else if (e.key === "ArrowUp") {
           e.preventDefault();
           indeksDiangkat = Math.max(indeksDiangkat - 1, 0);
           updateDiangkat(items);
@@ -1699,7 +1713,25 @@
         document.getElementById("kembalian").innerText =
           kembali > 0 ? kembali.toLocaleString() : 0;
       }
+function selesaiTransaksi() {
+  // ... kode validasi stok dan perhitungan sebelumnya ...
+  
+  // ... kode simpan transaksi ...
 
+  siapkanCetak(totalJual, bayar);
+  simpanDb();
+  tampilkanToast(
+    "Transaksi Berhasil!",
+    `Total: Rp${totalJual.toLocaleString()}\nLaba: Rp${laba.toLocaleString()}`,
+  );
+
+  // Konfirmasi sebelum print (opsional, disarankan untuk kasir thermal printer)
+  if(confirm("Transaksi disimpan. Cetak struk sekarang?")) {
+      window.print();
+  }
+  
+  resetStruk();
+}
       function selesaiTransaksi() {
         if (struk.length === 0) return alert("Struk masih kosong");
         let totalJual = struk.reduce((a, b) => a + b.hargaJual * b.qty, 0);
