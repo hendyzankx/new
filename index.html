@@ -361,7 +361,7 @@
 
       /* ===== STYLE STRUK CETAK PROFESIONAL (PDF READY) ===== */
       #cetakStruk {
-        display: none; 
+        display: none; /* Default hidden */
         font-family: "Courier Prime", "Courier New", monospace;
         background: white;
         color: black;
@@ -1562,15 +1562,19 @@
         modal.classList.remove("show");
 
         if (isCetak) {
+          // Jika user menekan "Cetak / PDF"
+          // Tampilkan elemen struk sebentar agar DOM siap untuk Print
           let elemenStruk = document.getElementById("cetakStruk");
           elemenStruk.style.display = "block";
           elemenStruk.style.top = "0";
           elemenStruk.style.left = "0";
           elemenStruk.style.zIndex = "99999";
 
+          // Gunakan setTimeout untuk memberi jeda rendering sebelum dialog print muncul
           setTimeout(function () {
-            window.print();
+            window.print(); // Ini akan membuka dialog print browser
             
+            // Setelah dialog print muncul, kita reset tampilan setelah beberapa detik
             setTimeout(function () {
               elemenStruk.style.display = "none";
               elemenStruk.style.zIndex = "";
