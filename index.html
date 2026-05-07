@@ -359,9 +359,9 @@
         font-weight: 700;
       }
 
-      /* ===== STYLE STRUK CETAK PROFESIONAL (PDF READY) ===== */
+      /* CETAK STRUK */
       #cetakStruk {
-        display: none; /* Default hidden */
+        display: none;
         font-family: "Courier Prime", "Courier New", monospace;
         background: white;
         color: black;
@@ -444,7 +444,6 @@
         color: #555;
       }
       #cetakStruk .thank-you { font-weight: bold; margin-top: 5px; text-transform: uppercase; }
-      /* ===== AKHIR STYLE STRUK CETAK ===== */
 
       .pencarian-wrap {
         position: relative;
@@ -727,6 +726,36 @@
       }
       .btn-modal-no:hover { background: #e2e8f0; }
 
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 20000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 18px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .loading.hide { display: none; }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--hijau);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
       @media print {
         body {
           background: white;
@@ -734,7 +763,7 @@
           margin: 0;
           font-family: "Courier Prime", monospace;
         }
-        .app, .no-print, .tabs, .header, .toast-container, .modal-overlay { 
+        .app, .no-print, .tabs, .header, .toast-container, .modal-overlay, .loading { 
           display: none !important; 
         }
         #cetakStruk { 
@@ -759,6 +788,11 @@
     </style>
   </head>
   <body>
+    <div class="loading hide" id="loadingOverlay">
+      <div class="spinner"></div>
+      <div>Memproses...</div>
+    </div>
+
     <div class="app">
       <div class="header no-print">
         <h1 id="headerAppName">💰 KASIR PRO OFFLINE</h1>
@@ -810,16 +844,10 @@
             <div style="max-height: 300px; overflow-y: auto; border:1px solid #e2e8f0; border-radius: 8px;">
               <table id="tabelStruk">
                 <thead>
-                  <tr>
-                    <th style="width: 40%">Barang</th>
-                    <th style="width: 15%; text-align: center">Qty</th>
-                    <th style="width: 20%; text-align: right">Jual</th>
-                    <th style="width: 25%; text-align: right">Total</th>
-                    <th style="width: auto; text-align: right;">Aksi</th>
-                  </tr>
+                  <tr><th style="width: 40%">Barang</th><th style="width: 15%; text-align: center">Qty</th><th style="width: 20%; text-align: right">Jual</th><th style="width: 25%; text-align: right">Total</th><th style="width: auto; text-align: right;">Aksi</th></tr>
                 </thead>
                 <tbody></tbody>
-              </table>
+               </table>
             </div>
 
             <div class="total-box">
@@ -887,18 +915,7 @@
             <div class="filter-grid" id="filterGrid"></div>
             <div style="overflow-x: auto">
               <table id="tabelBarang">
-                <thead>
-                  <tr>
-                    <th>Barcode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Modal</th>
-                    <th>Jual</th>
-                    <th>Laba</th>
-                    <th>Stok</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>Barcode</th><th>Nama</th><th>Kategori</th><th>Modal</th><th>Jual</th><th>Laba</th><th>Stok</th><th>Aksi</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -910,18 +927,9 @@
           <div class="card">
             <h3>Ringkasan Hari Ini</h3>
             <div class="ringkasan-grid">
-              <div class="total-box">
-                <div class="label">OMSET (PENJUALAN)</div>
-                <div class="angka">Rp <span id="totalHariIni">0</span></div>
-              </div>
-              <div class="total-box abu-gelap">
-                <div class="label">MODAL</div>
-                <div class="angka">Rp <span id="modalHariIni">0</span></div>
-              </div>
-              <div class="total-box emas">
-                <div class="label">KEUNTUNGAN</div>
-                <div class="angka">Rp <span id="labaHariIni">0</span></div>
-              </div>
+              <div class="total-box"><div class="label">OMSET (PENJUALAN)</div><div class="angka">Rp <span id="totalHariIni">0</span></div></div>
+              <div class="total-box abu-gelap"><div class="label">MODAL</div><div class="angka">Rp <span id="modalHariIni">0</span></div></div>
+              <div class="total-box emas"><div class="label">KEUNTUNGAN</div><div class="angka">Rp <span id="labaHariIni">0</span></div></div>
             </div>
             <button onclick="exportCSV()">📊 Download Excel</button>
             <button onclick="hapusLaporan()" class="btn-hapus" style="width: 100%">🗑️ Hapus Laporan</button>
@@ -929,151 +937,63 @@
           <div class="card" style="margin-top: 20px">
             <h3>Riwayat Transaksi</h3>
             <div style="overflow-x: auto">
-              <table id="tabelLaporan">
-                <thead>
-                  <tr>
-                    <th>Waktu</th>
-                    <th>Omset</th>
-                    <th>Modal</th>
-                    <th>Laba</th>
-                    <th>Detail Item</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+              <table id="tabelLaporan"><thead><tr><th>Waktu</th><th>Omset</th><th>Modal</th><th>Laba</th><th>Detail Item</th></tr></thead><tbody></tbody></table>
             </div>
           </div>
         </div>
 
         <!-- TAB PENGATURAN -->
         <div id="pengaturan" class="hide no-print">
-          <div class="card">
-            <h3>⚙️ Pengaturan Profil Toko</h3>
-            <div class="setting-row">
-              <label>Nama Toko</label>
-              <input type="text" id="setNamaToko" placeholder="Contoh: Toko Maju Jaya" />
-            </div>
-            <div class="setting-row">
-              <label>Alamat Toko</label>
-              <input type="text" id="setAlamatToko" placeholder="Jl. Raya No. 1, Jakarta" />
-            </div>
-            <div class="setting-row">
-              <label>No. Telepon / Kontak</label>
-              <input type="text" id="setTeleponToko" placeholder="0812-xxxx-xxxx" />
-            </div>
-            <div class="setting-row">
-              <label>Pesan Footer Struk (Terima Kasih...)</label>
-              <textarea id="setFooterStruk" rows="2" style="width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 8px;" placeholder="Barang yang dibeli tidak dapat ditukar..."></textarea>
-            </div>
+          <div class="card"><h3>⚙️ Pengaturan Profil Toko</h3>
+            <div class="setting-row"><label>Nama Toko</label><input type="text" id="setNamaToko" placeholder="Contoh: Toko Maju Jaya" /></div>
+            <div class="setting-row"><label>Alamat Toko</label><input type="text" id="setAlamatToko" placeholder="Jl. Raya No. 1, Jakarta" /></div>
+            <div class="setting-row"><label>No. Telepon / Kontak</label><input type="text" id="setTeleponToko" placeholder="0812-xxxx-xxxx" /></div>
+            <div class="setting-row"><label>Pesan Footer Struk</label><textarea id="setFooterStruk" rows="2" placeholder="Barang yang dibeli tidak dapat ditukar..."></textarea></div>
             <button onclick="simpanPengaturan()" class="btn-save">💾 Simpan Perubahan</button>
           </div>
-
-          <div class="card">
-            <h3>💾 Backup & Restore Data</h3>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 10px">
-              Gunakan fitur ini untuk memindahkan data ke HP lain atau menyimpan cadangan data.
-            </p>
-            <button onclick="backupData()" style="margin-bottom: 10px">📥 Download Backup (.JSON)</button>
-
-            <div style="border-top: 1px dashed #cbd5e1; margin: 15px 0"></div>
-
-            <label style="font-weight: 600; font-size: 13px; color: #475569">Restore Data</label>
-            <input type="file" id="fileRestore" accept=".json" style="margin-top: 5px; display: none;" />
-            <button id="btnRestoreTrigger" onclick="document.getElementById('fileRestore').click()" style="margin-top: 10px; background: #475569 !important;">
-              📂 Pilih File Backup...
-            </button>
-            <div id="restoreStatus" style="font-size: 12px; margin-top: 5px; color: #64748b;"></div>
+          <div class="card"><h3>💾 Backup & Restore Data</h3>
+            <p style="font-size:13px;color:#64748b;margin-bottom:10px">Gunakan fitur ini untuk memindahkan data ke HP lain atau menyimpan cadangan data.</p>
+            <button onclick="backupData()" style="margin-bottom:10px">📥 Download Backup (.JSON)</button>
+            <div style="border-top:1px dashed #cbd5e1;margin:15px 0"></div>
+            <label style="font-weight:600;font-size:13px;color:#475569">Restore Data</label>
+            <input type="file" id="fileRestore" accept=".json" style="margin-top:5px;display:none;" />
+            <button id="btnRestoreTrigger" onclick="document.getElementById('fileRestore').click()" style="margin-top:10px;background:#475569 !important;">📂 Pilih File Backup...</button>
+            <div id="restoreStatus" style="font-size:12px;margin-top:5px;color:#64748b;"></div>
           </div>
-
-          <div class="card" style="border: 1px solid #fca5a5; background: #fef2f2">
-            <h3 style="color: #991b1b">⚠️ Zona Bahaya (Hapus Data)</h3>
-            <p style="font-size: 13px; color: #7f1d1d; margin-bottom: 10px">
-              Tindakan ini tidak dapat dibatalkan. Pastikan Anda sudah melakukan Backup sebelum menghapus data.
-            </p>
-            <button onclick="hapusData('barang')" class="btn-hapus" style="margin-bottom: 10px">🗑️ Hapus Semua Barang</button>
+          <div class="card" style="border:1px solid #fca5a5;background:#fef2f2">
+            <h3 style="color:#991b1b">⚠️ Zona Bahaya (Hapus Data)</h3>
+            <p style="font-size:13px;color:#7f1d1d;margin-bottom:10px">Tindakan ini tidak dapat dibatalkan. Pastikan Anda sudah melakukan Backup sebelum menghapus data.</p>
+            <button onclick="hapusData('barang')" class="btn-hapus" style="margin-bottom:10px">🗑️ Hapus Semua Barang</button>
             <button onclick="hapusData('transaksi')" class="btn-hapus">🗑️ Hapus Semua Laporan Transaksi</button>
           </div>
         </div>
 
-        <!-- AREA CETAK STRUK -->
         <div id="cetakStruk">
           <div class="paper">
-            <div class="header-store">
-              <div class="store-name" id="printStoreName">TOKO KASIR PRO</div>
-              <div class="store-address" id="printStoreAddress">
-                Jl. Merdeka No. 45, Jakarta Selatan<br />
-                Telp: 0812-3456-7890
-              </div>
-            </div>
-            <div class="meta-info">
-              <span id="printDate">Tgl: -</span>
-              <span id="printNoStruk">No: #001</span>
-              <span id="printKasir">Kasir: Admin</span>
-            </div>
-            <table class="items">
-              <thead>
-                <tr>
-                  <th class="col-name">ITEM</th>
-                  <th class="col-qty">QTY</th>
-                  <th class="col-price">HARGA</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyCetak"></tbody>
-            </table>
+            <div class="header-store"><div class="store-name" id="printStoreName">TOKO KASIR PRO</div><div class="store-address" id="printStoreAddress">Jl. Merdeka No. 45, Jakarta Selatan<br />Telp: 0812-3456-7890</div></div>
+            <div class="meta-info"><span id="printDate">Tgl: -</span><span id="printNoStruk">No: #001</span><span id="printKasir">Kasir: Admin</span></div>
+            <table class="items"><thead><tr><th class="col-name">ITEM</th><th class="col-qty">QTY</th><th class="col-price">HARGA</th></tr></thead><tbody id="tbodyCetak"></tbody></table>
             <div class="divider"></div>
-            <div class="summary-row">
-              <span>Total Belanja</span>
-              <span id="totalCetak">Rp 0</span>
-            </div>
-            <div class="summary-row">
-              <span>Tunai</span>
-              <span id="bayarCetak">Rp 0</span>
-            </div>
-            <div class="summary-row">
-              <span>Kembali</span>
-              <span id="kembaliCetak">Rp 0</span>
-            </div>
+            <div class="summary-row"><span>Total Belanja</span><span id="totalCetak">Rp 0</span></div>
+            <div class="summary-row"><span>Tunai</span><span id="bayarCetak">Rp 0</span></div>
+            <div class="summary-row"><span>Kembali</span><span id="kembaliCetak">Rp 0</span></div>
             <div class="divider"></div>
-            <div class="footer">
-              <div class="thank-you">TERIMA KASIH</div>
-              <div id="printFooterMsg">
-                Barang yang sudah dibeli tidak dapat ditukar/dikembalikan
-              </div>
-              <div style="margin-top: 5px" id="printStoreContact">
-                www.tokomajujaya.com
-              </div>
-            </div>
+            <div class="footer"><div class="thank-you">TERIMA KASIH</div><div id="printFooterMsg">Barang yang sudah dibeli tidak dapat ditukar/dikembalikan</div><div style="margin-top:5px" id="printStoreContact">www.tokomajujaya.com</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- POPUP MODAL CONFIRMATION -->
     <div id="modalKonfirmasi" class="modal-overlay">
       <div class="modal-box">
-        <div class="modal-header">
-          <span class="modal-icon">✅</span>
-          <div class="modal-title">TRANSAKSI SUKSES!</div>
-        </div>
+        <div class="modal-header"><span class="modal-icon">✅</span><div class="modal-title">TRANSAKSI SUKSES!</div></div>
         <div class="modal-body">
           <div class="summary-grid">
-            <div class="sum-card">
-              <div class="sum-label">Total Bayar</div>
-              <div class="sum-val blue" id="modalTotalBayar">Rp 0</div>
-            </div>
-            <div class="sum-card">
-              <div class="sum-label">Uang Diterima</div>
-              <div class="sum-val" id="modalUangDiterima">Rp 0</div>
-            </div>
-            <div class="sum-card big">
-              <div class="sum-label">KEMBALIAN</div>
-              <div class="sum-val green" id="modalKembalian" style="font-size: 28px;">Rp 0</div>
-            </div>
+            <div class="sum-card"><div class="sum-label">Total Bayar</div><div class="sum-val blue" id="modalTotalBayar">Rp 0</div></div>
+            <div class="sum-card"><div class="sum-label">Uang Diterima</div><div class="sum-val" id="modalUangDiterima">Rp 0</div></div>
+            <div class="sum-card big"><div class="sum-label">KEMBALIAN</div><div class="sum-val green" id="modalKembalian" style="font-size:28px;">Rp 0</div></div>
           </div>
-          <div class="modal-actions">
-            <button class="btn-modal-yes" onclick="lanjutkanCetak(true)">✅ Cetak / PDF</button>
-            <button class="btn-modal-no" onclick="lanjutkanCetak(false)">Tidak</button>
-          </div>
+          <div class="modal-actions"><button class="btn-modal-yes" onclick="lanjutkanCetak(true)">✅ Cetak / PDF</button><button class="btn-modal-no" onclick="lanjutkanCetak(false)">Tidak</button></div>
         </div>
       </div>
     </div>
@@ -1118,6 +1038,9 @@
         { nama: "Kebutuhan Rumah", emoji: "🧹", kelas: "badge-kebutuhan" },
         { nama: "Lainnya", emoji: "📦", kelas: "badge-lainnya" },
       ];
+
+      function showLoading() { document.getElementById("loadingOverlay").classList.remove("hide"); }
+      function hideLoading() { document.getElementById("loadingOverlay").classList.add("hide"); }
 
       function getInfoKategori(namaKategori) {
         return DAFTAR_KATEGORI.find((k) => k.nama === namaKategori) || { nama: namaKategori || "Lainnya", emoji: "📦", kelas: "badge-lainnya" };
@@ -1177,28 +1100,34 @@
         dbPengaturan.alamatToko = document.getElementById("setAlamatToko").value;
         dbPengaturan.teleponToko = document.getElementById("setTeleponToko").value;
         dbPengaturan.footerStruk = document.getElementById("setFooterStruk").value;
-        
         simpanDb(); 
-        
         tampilkanToast("Pengaturan Disimpan", "Nama toko dan profil struk berhasil diperbarui.");
       }
 
       function backupData() {
-        let dataStr = JSON.stringify({ pengaturan: dbPengaturan, barang: dbBarang, transaksi: dbTransaksi }, null, 2);
-        let blob = new Blob([dataStr], { type: "application/json" });
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `backup_kasir_${new Date().toISOString().slice(0, 10)}.json`;
-        a.click();
+        showLoading();
+        setTimeout(() => {
+          try {
+            let dataStr = JSON.stringify({ pengaturan: dbPengaturan, barang: dbBarang, transaksi: dbTransaksi }, null, 2);
+            let blob = new Blob([dataStr], { type: "application/json" });
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `backup_kasir_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            tampilkanToast("Backup Berhasil", "File backup sudah diunduh");
+          } catch (err) {
+            tampilkanToast("Backup Gagal", err.message);
+          } finally {
+            hideLoading();
+          }
+        }, 100);
       }
 
       document.getElementById('fileRestore').addEventListener('change', function(e) {
         let file = e.target.files[0];
         let statusDiv = document.getElementById("restoreStatus");
         if (!file) return;
-
-        statusDiv.innerText = "Sedang membaca file...";
-        
+        showLoading();
         let reader = new FileReader();
         reader.onload = function(evt) {
           try {
@@ -1211,7 +1140,7 @@
                 simpanDb(); 
                 alert("✅ Restore Data Berhasil!");
                 statusDiv.innerText = "Restore sukses pada " + new Date().toLocaleTimeString();
-                document.getElementById('fileRestore').value = ""; 
+                tampilkanToast("Restore Berhasil", "Data telah dipulihkan");
               } else {
                 statusDiv.innerText = "Restore dibatalkan.";
               }
@@ -1223,6 +1152,9 @@
             console.error(err);
             alert("❌ Gagal membaca file JSON. Pastikan file benar.");
             statusDiv.innerText = "Gagal membaca file JSON.";
+          } finally {
+            hideLoading();
+            document.getElementById('fileRestore').value = "";
           }
         };
         reader.readAsText(file);
@@ -1234,12 +1166,14 @@
             dbBarang = [];
             simpanDb();
             alert("Data barang berhasil dihapus.");
+            tampilkanToast("Hapus Data", "Semua barang telah dihapus");
           }
         } else if (tipe === "transaksi") {
           if (confirm("Yakin ingin menghapus SEMUA RIWAYAT TRANSAKSI?")) {
             dbTransaksi = [];
             simpanDb();
             alert("Riwayat transaksi berhasil dihapus.");
+            tampilkanToast("Hapus Data", "Riwayat transaksi telah dihapus");
           }
         }
       }
@@ -1256,7 +1190,7 @@
           gain.gain.value = 0.1;
           osc.start();
           osc.stop(ctx.currentTime + 0.1);
-        } catch (e) {}
+        } catch (e) { console.log("Beep error:", e); }
       }
 
       function mulaiScanKamera(mode) {
@@ -1282,7 +1216,6 @@
           document.getElementById("barcode").value = decodedText;
           cekKetersediaanBarcode();
           stopScanKamera();
-          document.getElementById("nama").focus();
           beep();
           isScanning = false;
           hapusStatusScan();
@@ -1479,10 +1412,14 @@
         else { let sisa = barangDb ? barangDb.stok : 0; alert(`Stok tidak mencukupi!\nMaksimal bisa beli: ${sisa}`); }
       }
       
-      // PERBAIKAN TYPO: Perbaiki fungsi setUang
+      // PERBAIKAN: Fungsi setUang yang sudah diperbaiki
       function setUang(nominal) {
         let total = struk.reduce((a, b) => a + b.hargaJual * b.qty, 0);
-        document.getElementById("bayar").value = nominal === "pas" ? total : nominal;
+        if (nominal === "pas") {
+          document.getElementById("bayar").value = total;
+        } else {
+          document.getElementById("bayar").value = nominal;
+        }
         hitungKembali();
       }
 
@@ -1532,7 +1469,20 @@
           return;
         }
 
-        struk.forEach((s) => { let b = dbBarang.find((x) => x.barcode === s.barcode); if (b) b.stok -= s.qty; });
+        // PERBAIKAN: Validasi ekstra stok negatif
+        try {
+          struk.forEach((s) => { 
+            let b = dbBarang.find((x) => x.barcode === s.barcode); 
+            if (b && b.stok >= s.qty) {
+              b.stok -= s.qty;
+            } else {
+              throw new Error(`Stok ${s.nama} tidak mencukupi`);
+            }
+          });
+        } catch (err) {
+          alert("Error: " + err.message);
+          return;
+        }
         
         dbTransaksi.push({
           waktu: new Date().toLocaleString("id-ID"),
@@ -1544,7 +1494,6 @@
         simpanDb();
 
         siapkanCetak(totalJual, bayar);
-
         konfirmasiPopup(totalJual, bayar, bayar - totalJual, laba);
       }
 
@@ -1562,19 +1511,14 @@
         modal.classList.remove("show");
 
         if (isCetak) {
-          // Jika user menekan "Cetak / PDF"
-          // Tampilkan elemen struk sebentar agar DOM siap untuk Print
           let elemenStruk = document.getElementById("cetakStruk");
           elemenStruk.style.display = "block";
           elemenStruk.style.top = "0";
           elemenStruk.style.left = "0";
           elemenStruk.style.zIndex = "99999";
 
-          // Gunakan setTimeout untuk memberi jeda rendering sebelum dialog print muncul
           setTimeout(function () {
-            window.print(); // Ini akan membuka dialog print browser
-            
-            // Setelah dialog print muncul, kita reset tampilan setelah beberapa detik
+            window.print();
             setTimeout(function () {
               elemenStruk.style.display = "none";
               elemenStruk.style.zIndex = "";
@@ -1751,19 +1695,7 @@
           let asliIdx = dbBarang.indexOf(b);
           let labaPerPcs = b.hargaJual - b.hargaBeli;
           let labaColor = labaPerPcs >= 0 ? "var(--hijau)" : "var(--merah)";
-          tbody.innerHTML += `<tr>
-            <td style="font-size:11px">${b.barcode}</td>
-            <td><b>${b.nama}</b></td>
-            <td>${buatBadgeHtml(b.kategori)}</td>
-            <td>Rp${b.hargaBeli.toLocaleString()}</td>
-            <td>Rp${b.hargaJual.toLocaleString()}</td>
-            <td style="color:${labaColor};font-weight:600; font-size:12px">Rp${labaPerPcs.toLocaleString()}</td>
-            <td><b>${b.stok}</b></td>
-            <td>
-              <button class="btn-edit" onclick="editBarang(${asliIdx})">✏️</button>
-              <button class="btn-hapus" onclick="hapusBarang(${asliIdx})">🗑️</button>
-            </td>
-          </tr>`;
+          tbody.innerHTML += `<tr><td style="font-size:11px">${b.barcode}</td><td><b>${b.nama}</b></td><td>${buatBadgeHtml(b.kategori)}</td><td>Rp${b.hargaBeli.toLocaleString()}</td><td>Rp${b.hargaJual.toLocaleString()}</td><td style="color:${labaColor};font-weight:600; font-size:12px">Rp${labaPerPcs.toLocaleString()}</td><td><b>${b.stok}</b></td><td><button class="btn-edit" onclick="editBarang(${asliIdx})">✏️</button><button class="btn-hapus" onclick="hapusBarang(${asliIdx})">🗑️</button></td></tr>`;
         });
         if (daftarTampil.length === 0) {
           tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#94a3b8">Tidak ada barang dalam kategori ini</td></tr>`;
@@ -1844,9 +1776,10 @@
         a.href = URL.createObjectURL(blob);
         a.download = "laporan_kasir.csv";
         a.click();
+        tampilkanToast("Export Berhasil", "File CSV sudah diunduh");
       }
       function hapusLaporan() {
-        if (confirm("Yakin hapus semua laporan?")) { dbTransaksi = []; simpanDb(); }
+        if (confirm("Yakin hapus semua laporan?")) { dbTransaksi = []; simpanDb(); tampilkanToast("Laporan Dihapus", "Semua riwayat transaksi telah dihapus"); }
       }
 
       document.getElementById("qtyManual").addEventListener("keypress", function (e) {
