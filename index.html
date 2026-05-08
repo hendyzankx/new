@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Kasir Pro Offline - Versi Stabil</title>
+    <title>Kasir Pro Offline - Versi Flat</title>
     <meta name="theme-color" content="#2563eb" />
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <link
@@ -45,11 +45,14 @@
         display: flex;
         flex-direction: column;
       }
+      
+      /* HEADER */
       .header {
         background: linear-gradient(135deg, var(--biru), var(--biru-gelap));
         color: white;
         padding: 20px;
         text-align: center;
+        position: relative;
       }
       .header h1 {
         font-size: 22px;
@@ -60,6 +63,59 @@
         font-size: 13px;
         opacity: 0.9;
       }
+      .btn-back-menu {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        display: none; /* Tersembunyi default */
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-back-menu:hover { background: rgba(255,255,255,0.3); }
+
+      /* MENU UTAMA */
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
+        padding: 20px;
+        flex: 1;
+        align-content: start;
+      }
+      .menu-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.1s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .menu-card:hover {
+        border-color: var(--biru);
+        background: #eff6ff;
+        transform: translateY(-2px);
+      }
+      .menu-card:active {
+        transform: scale(0.98);
+      }
+      .menu-icon { font-size: 32px; }
+      .menu-label { font-weight: 600; color: var(--text-gelap); font-size: 15px; }
+
       .tabs {
         display: flex;
         background: #e2e8f0;
@@ -149,7 +205,7 @@
         display: block;
         text-align: center;
         line-height: 1.4;
-        transition: transform 0.1s, opacity 0.2s;
+        transition: opacity 0.2s;
       }
       button:active {
         transform: scale(0.98);
@@ -313,6 +369,7 @@
         display: none !important;
       }
       
+      /* MODAL TANPA ANIMASI SLIDING */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -327,7 +384,7 @@
         align-items: center;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s;
+        transition: opacity 0.2s; /* Hanya fade in/out */
       }
       .modal-overlay.show {
         opacity: 1;
@@ -343,11 +400,7 @@
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         display: flex;
         flex-direction: column;
-        transform: translateY(20px);
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-      .modal-overlay.show .modal-box {
-        transform: translateY(0);
+        /* Hapus transform translateY agar tidak sliding */
       }
       
       .modal-header {
@@ -465,6 +518,7 @@
         }
       }
 
+      /* STICKY CART HP TANPA ANIMASI SLIDING */
       @media (max-width: 849px) {
         .sticky-mobile-cart {
           position: fixed;
@@ -478,7 +532,7 @@
           box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
           border-top: 1px solid #e2e8f0;
           border-radius: 20px 20px 0 0;
-          animation: slideUp 0.3s ease-out;
+          /* Hapus animasi slideUp */
         }
         .sticky-mobile-cart h3 {
           margin-bottom: 8px;
@@ -486,11 +540,6 @@
         }
       }
       
-      @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-      }
-
       .katalog-search-bar {
         position: sticky;
         top: 0;
@@ -706,6 +755,7 @@
       .filter-chip:hover { border-color: var(--biru); color: var(--biru); }
       .filter-chip.aktif { background: var(--biru); color: white; border-color: var(--biru); }
 
+      /* TOAST TANPA ANIMASI SLIDING */
       .toast-container {
         position: fixed;
         bottom: 20px;
@@ -729,12 +779,12 @@
         align-items: center;
         gap: 12px;
         opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        /* Hapus transform translateY agar tidak geser */
+        transition: opacity 0.3s;
         pointer-events: auto;
         border-left: 6px solid var(--hijau);
       }
-      .toast.show { opacity: 1; transform: translateY(0); }
+      .toast.show { opacity: 1; }
       .toast-icon { font-size: 24px; color: var(--hijau); flex-shrink: 0; }
       .toast-content { flex: 1; }
       .toast-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; color: #1e293b; }
@@ -870,11 +920,37 @@
 
     <div class="app">
       <div class="header no-print">
-        <h1 id="headerAppName">💰 KASIR PRO OFFLINE</h1>
-        <small id="headerAppDesc">Scan cepat, atur jumlah, pantau keuntungan otomatis</small>
+        <button id="btnBackMenu" class="btn-back-menu" onclick="kembaliKeMenu()">⬅️</button>
+        <h1 id="headerAppName">💰 KASIR PRO</h1>
+        <small id="headerAppDesc">Sistem Kasir Offline</small>
       </div>
 
-      <div class="tabs no-print">
+      <!-- MENU UTAMA (Dashboard) -->
+      <div id="menuUtama" class="menu-grid no-print">
+        <div class="menu-card" onclick="masukFitur('kasir')">
+          <div class="menu-icon">🛒</div>
+          <div class="menu-label">Kasir</div>
+        </div>
+        <div class="menu-card" onclick="masukFitur('katalog')">
+          <div class="menu-icon">📑</div>
+          <div class="menu-label">Katalog</div>
+        </div>
+        <div class="menu-card" onclick="masukFitur('barang')">
+          <div class="menu-icon">📦</div>
+          <div class="menu-label">Barang</div>
+        </div>
+        <div class="menu-card" onclick="masukFitur('laporan')">
+          <div class="menu-icon">📊</div>
+          <div class="menu-label">Laporan</div>
+        </div>
+        <div class="menu-card" onclick="masukFitur('pengaturan')">
+          <div class="menu-icon">⚙️</div>
+          <div class="menu-label">Pengaturan</div>
+        </div>
+      </div>
+
+      <!-- NAVIGASI TABS (Tersembunyi saat di Menu) -->
+      <div class="tabs no-print hide" id="tabContainer">
         <button onclick="gantiTab('kasir')" id="tabKasir" class="aktif">🛒 Kasir</button>
         <button onclick="gantiTab('katalog')" id="tabKatalog">📑 Katalog</button>
         <button onclick="gantiTab('barang')" id="tabBarang">Barang</button>
@@ -882,7 +958,8 @@
         <button onclick="gantiTab('pengaturan')" id="tabPengaturan">⚙️ Pengaturan</button>
       </div>
 
-      <div class="konten">
+      <!-- KONTEN FITUR (Tersembunyi saat di Menu) -->
+      <div class="konten hide" id="appContent">
         <div id="kasir" class="kasir-grid">
           <div class="card no-print">
             <h3>1. Scan Barcode</h3>
@@ -1212,14 +1289,38 @@
           if (header) header.innerText = dbPengaturan.namaToko || "KASIR PRO";
         }
 
-        // PENTING: Simpan & restore keranjang saat pindah tab
+        // NAVIGASI MENU
+        window.masukFitur = function(tab) {
+          // Sembunyikan Menu Utama
+          document.getElementById("menuUtama").classList.add("hide");
+          // Tampilkan Tabs dan Konten Aplikasi
+          document.getElementById("tabContainer").classList.remove("hide");
+          document.getElementById("appContent").classList.remove("hide");
+          // Tampilkan Tombol Back
+          document.getElementById("btnBackMenu").style.display = "flex";
+          // Ganti Tab
+          gantiTab(tab);
+        };
+
+        window.kembaliKeMenu = function() {
+          // Sembunyikan Tabs dan Konten Aplikasi
+          document.getElementById("tabContainer").classList.add("hide");
+          document.getElementById("appContent").classList.add("hide");
+          // Tampilkan Menu Utama
+          document.getElementById("menuUtama").classList.remove("hide");
+          // Sembunyikan Tombol Back
+          document.getElementById("btnBackMenu").style.display = "none";
+          // Stop kamera jika sedang nyala
+          stopScanKamera();
+        };
+
         window.gantiTab = function(tab) {
           // Simpan keranjang sebelum pindah
           sessionStorage.setItem("struk_sementara", JSON.stringify(struk));
           
           stopScanKamera();
           tutupDropdown();
-          document.querySelectorAll(".konten > div[id]").forEach((d) => d.classList.add("hide"));
+          document.querySelectorAll("#appContent > div[id]").forEach((d) => d.classList.add("hide"));
           let target = document.getElementById(tab);
           if (target) target.classList.remove("hide");
           document.querySelectorAll(".tabs button").forEach((b) => b.classList.remove("aktif"));
@@ -1305,7 +1406,6 @@
                     renderStruk();
                     renderKatalogCart();
                     
-                    // Sinkronisasi kategori unik
                     let existingKategori = new Set(DAFTAR_KATEGORI.map(k => k.nama));
                     dbBarang.forEach(b => { if(b.kategori && !existingKategori.has(b.kategori)) {
                       DAFTAR_KATEGORI.push({ nama: b.kategori, emoji: "📌", kelas: "badge-lainnya" });
@@ -1473,7 +1573,6 @@
             if (kategoriSelect) kategoriSelect.value = barangAda.kategori;
             if (hargaBeliInput) hargaBeliInput.value = barangAda.hargaBeli;
             if (hargaJualInput) hargaJualInput.value = barangAda.hargaJual;
-            // FIX BUG: Saat scan/barcode ditemukan, kosongkan stok agar tidak tertambah dobel saat edit
             if (stokInput) stokInput.value = "";
             if (stokInput) stokInput.placeholder = "Jumlah Stok (Untuk Ditambahkan)";
           } else if (infoBox) {
@@ -1801,7 +1900,6 @@
           
           if (nominal === "pas") {
             bayarCheckout.value = total;
-            // Kunci input jika uang pas agar user tidak salah ketik
             bayarCheckout.readOnly = true;
             setTimeout(() => { bayarCheckout.readOnly = false; }, 2000);
           } else if (nominal === 0) {
@@ -1827,7 +1925,6 @@
           kembaliCheckout.innerText = kembali > 0 ? kembali.toLocaleString('id-ID') : 0;
         };
 
-        // CETAK STRUK dengan anti duplikat
         let isPrintingNow = false;
         window.cetakStruk = function() {
           if (isPrintingNow) {
@@ -1836,7 +1933,6 @@
           }
           isPrintingNow = true;
           
-          // Nonaktifkan tombol cetak sementara
           let btnCetak = document.querySelector('#modalKonfirmasi .modal-body button:last-child');
           if (btnCetak) btnCetak.disabled = true;
           
@@ -2003,12 +2099,9 @@
           if (!kategori) return alert("Pilih kategori barang");
           if (hargaJual <= 0) return alert("Harga jual harus lebih dari 0");
           
-          // Cek mode: Tambah Baru atau Edit
           let idx = dbBarang.findIndex((b) => b.barcode === barcode);
           
           if (idx >= 0) {
-            // MODE EDIT
-            // Jika stok kosong di input, berarti user tidak ingin mengubah stok saat edit
             if (stokValue > 0) {
                dbBarang[idx].stok += stokValue;
             }
@@ -2021,10 +2114,8 @@
             if (stokValue > 0) pesanSukses = `Berhasil menambahkan ${stokValue} stok. Total stok ${nama} sekarang: ${dbBarang[idx].stok}`;
             alert(pesanSukses);
           } else {
-            // MODE BARU
             if (stokValue <= 0) return alert("Jumlah stok awal harus lebih dari 0");
             
-            // Cek kategori baru
             let kategoriExists = DAFTAR_KATEGORI.some(k => k.nama === kategori);
             if (!kategoriExists) {
               DAFTAR_KATEGORI.push({ nama: kategori, emoji: "📌", kelas: "badge-lainnya" });
@@ -2054,12 +2145,11 @@
           if (hargaBeliInput) hargaBeliInput.value = b.hargaBeli;
           if (hargaJualInput) hargaJualInput.value = b.hargaJual;
           
-          // FIX BUG: Kosongkan input stok saat edit agar user tidak salah menambah stok
           if (stokInput) stokInput.value = "";
           if (stokInput) stokInput.placeholder = `Kosongkan jika tidak ingin menambah stok (Stok saat ini: ${b.stok})`;
           
           if (btnBatalEdit) btnBatalEdit.style.display = "block";
-          if (infoStok) infoStok.style.display = "block"; // Tampilkan info bahwa stok akan ditambah
+          if (infoStok) infoStok.style.display = "block";
           if (namaInput) namaInput.focus();
           window.scrollTo(0, 0);
         };
