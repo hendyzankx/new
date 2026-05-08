@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Kasir Pro Offline - Stabil Tanpa Sliding</title>
+    <title>Kasir Pro Offline - Versi Stabil</title>
     <meta name="theme-color" content="#2563eb" />
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <link
@@ -76,7 +76,7 @@
         font-size: 14px;
         white-space: nowrap;
         color: #64748b;
-        transition: none;
+        transition: all 0.2s;
         min-width: 80px;
       }
       .tabs button.aktif {
@@ -149,7 +149,7 @@
         display: block;
         text-align: center;
         line-height: 1.4;
-        transition: none; /* semua sliding dinonaktifkan */
+        transition: transform 0.1s, opacity 0.2s;
       }
       button:active {
         transform: scale(0.98);
@@ -327,7 +327,7 @@
         align-items: center;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.2s; /* hanya fade, tidak ada sliding */
+        transition: opacity 0.3s;
       }
       .modal-overlay.show {
         opacity: 1;
@@ -343,9 +343,11 @@
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         display: flex;
         flex-direction: column;
-        /* HAPUS semua sliding: tidak ada translate, tidak ada transition */
-        transform: none !important;
-        transition: none !important;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .modal-overlay.show .modal-box {
+        transform: translateY(0);
       }
       
       .modal-header {
@@ -444,7 +446,7 @@
         display: grid;
         grid-template-columns: 1fr;
         gap: 20px;
-        padding-bottom: 20px; /* dikurangi karena tidak ada sliding */
+        padding-bottom: 180px; 
       }
       @media (min-width: 850px) {
         .katalog-layout {
@@ -476,7 +478,7 @@
           box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
           border-top: 1px solid #e2e8f0;
           border-radius: 20px 20px 0 0;
-          animation: none; /* tidak ada sliding */
+          animation: slideUp 0.3s ease-out;
         }
         .sticky-mobile-cart h3 {
           margin-bottom: 8px;
@@ -484,7 +486,10 @@
         }
       }
       
-      /* keyframes slideUp dihapus (tidak dipakai) */
+      @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
 
       .katalog-search-bar {
         position: sticky;
@@ -508,8 +513,7 @@
         border-radius: 8px;
         padding: 12px;
         cursor: pointer;
-        /* hilangkan sliding hover */
-        transition: none;
+        transition: all 0.1s;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -521,7 +525,7 @@
       .barang-card:hover {
         border-color: var(--biru);
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-        transform: none; /* tidak ada translate */
+        transform: translateY(-2px);
       }
 
       .barang-card.stok-kosong {
@@ -657,7 +661,7 @@
         align-items: center;
         border-bottom: 1px solid #f1f5f9;
         font-size: 13px;
-        transition: none; /* tidak sliding */
+        transition: background 0.1s;
       }
       .dd-item:last-child { border-bottom: none; border-radius: 0 0 8px 8px; }
       .dd-item:hover, .dd-item.diangkat { background: #f0fdf4; }
@@ -697,7 +701,7 @@
         border: 2px solid #cbd5e1;
         background: white;
         color: #475569;
-        transition: none;
+        transition: all 0.15s;
       }
       .filter-chip:hover { border-color: var(--biru); color: var(--biru); }
       .filter-chip.aktif { background: var(--biru); color: white; border-color: var(--biru); }
@@ -725,16 +729,12 @@
         align-items: center;
         gap: 12px;
         opacity: 0;
-        /* hilangkan sliding (tidak ada translate) */
-        transform: none;
-        transition: opacity 0.2s ease;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         pointer-events: auto;
         border-left: 6px solid var(--hijau);
       }
-      .toast.show {
-        opacity: 1;
-        transform: none;
-      }
+      .toast.show { opacity: 1; transform: translateY(0); }
       .toast-icon { font-size: 24px; color: var(--hijau); flex-shrink: 0; }
       .toast-content { flex: 1; }
       .toast-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; color: #1e293b; }
@@ -871,7 +871,7 @@
     <div class="app">
       <div class="header no-print">
         <h1 id="headerAppName">💰 KASIR PRO OFFLINE</h1>
-        <small id="headerAppDesc">Scan cepat, atur jumlah, tanpa sliding</small>
+        <small id="headerAppDesc">Scan cepat, atur jumlah, pantau keuntungan otomatis</small>
       </div>
 
       <div class="tabs no-print">
@@ -1127,7 +1127,7 @@
 
     <script>
       (function() {
-        // ============ DATA (sama seperti kode asli, tidak ada perubahan logika) ============
+        // ============ DATA ============
         let dbBarang = JSON.parse(localStorage.getItem("barang") || "[]");
         let dbTransaksi = JSON.parse(localStorage.getItem("transaksi") || "[]");
         let dbPengaturan = JSON.parse(localStorage.getItem("pengaturan") || "{}");
@@ -1168,6 +1168,7 @@
           simpanDb();
         }
 
+        // ============ FUNGSI UTAMA ============
         function showLoading() { let el = document.getElementById("loadingOverlay"); if (el) el.classList.remove("hide"); }
         function hideLoading() { let el = document.getElementById("loadingOverlay"); if (el) el.classList.add("hide"); }
 
@@ -1211,8 +1212,11 @@
           if (header) header.innerText = dbPengaturan.namaToko || "KASIR PRO";
         }
 
+        // PENTING: Simpan & restore keranjang saat pindah tab
         window.gantiTab = function(tab) {
+          // Simpan keranjang sebelum pindah
           sessionStorage.setItem("struk_sementara", JSON.stringify(struk));
+          
           stopScanKamera();
           tutupDropdown();
           document.querySelectorAll(".konten > div[id]").forEach((d) => d.classList.add("hide"));
@@ -1224,6 +1228,7 @@
           if (aktifBtn) aktifBtn.classList.add("aktif");
           
           if (tab === "kasir") {
+              // Restore keranjang
               let saved = sessionStorage.getItem("struk_sementara");
               if (saved) {
                 try {
@@ -1300,6 +1305,7 @@
                     renderStruk();
                     renderKatalogCart();
                     
+                    // Sinkronisasi kategori unik
                     let existingKategori = new Set(DAFTAR_KATEGORI.map(k => k.nama));
                     dbBarang.forEach(b => { if(b.kategori && !existingKategori.has(b.kategori)) {
                       DAFTAR_KATEGORI.push({ nama: b.kategori, emoji: "📌", kelas: "badge-lainnya" });
@@ -1363,7 +1369,7 @@
             gain.gain.value = 0.1;
             osc.start();
             osc.stop(ctx.currentTime + 0.1);
-          } catch (e) { console.log("Beep tidak didukung"); }
+          } catch (e) { console.log("Beep tidak didukung di browser ini"); }
         }
 
         window.mulaiScanKamera = function(mode) {
@@ -1467,6 +1473,7 @@
             if (kategoriSelect) kategoriSelect.value = barangAda.kategori;
             if (hargaBeliInput) hargaBeliInput.value = barangAda.hargaBeli;
             if (hargaJualInput) hargaJualInput.value = barangAda.hargaJual;
+            // FIX BUG: Saat scan/barcode ditemukan, kosongkan stok agar tidak tertambah dobel saat edit
             if (stokInput) stokInput.value = "";
             if (stokInput) stokInput.placeholder = "Jumlah Stok (Untuk Ditambahkan)";
           } else if (infoBox) {
@@ -1557,6 +1564,7 @@
             inputCari.value = "";
             inputCari.focus();
           }
+          // Fokus ke scan input
           let scanInput = document.getElementById("scanInput");
           if (scanInput) scanInput.focus();
         };
@@ -1793,6 +1801,7 @@
           
           if (nominal === "pas") {
             bayarCheckout.value = total;
+            // Kunci input jika uang pas agar user tidak salah ketik
             bayarCheckout.readOnly = true;
             setTimeout(() => { bayarCheckout.readOnly = false; }, 2000);
           } else if (nominal === 0) {
@@ -1818,6 +1827,7 @@
           kembaliCheckout.innerText = kembali > 0 ? kembali.toLocaleString('id-ID') : 0;
         };
 
+        // CETAK STRUK dengan anti duplikat
         let isPrintingNow = false;
         window.cetakStruk = function() {
           if (isPrintingNow) {
@@ -1825,9 +1835,13 @@
             return;
           }
           isPrintingNow = true;
+          
+          // Nonaktifkan tombol cetak sementara
           let btnCetak = document.querySelector('#modalKonfirmasi .modal-body button:last-child');
           if (btnCetak) btnCetak.disabled = true;
+          
           window.print();
+          
           setTimeout(() => { 
             isPrintingNow = false;
             if (btnCetak) btnCetak.disabled = false;
@@ -1989,9 +2003,12 @@
           if (!kategori) return alert("Pilih kategori barang");
           if (hargaJual <= 0) return alert("Harga jual harus lebih dari 0");
           
+          // Cek mode: Tambah Baru atau Edit
           let idx = dbBarang.findIndex((b) => b.barcode === barcode);
           
           if (idx >= 0) {
+            // MODE EDIT
+            // Jika stok kosong di input, berarti user tidak ingin mengubah stok saat edit
             if (stokValue > 0) {
                dbBarang[idx].stok += stokValue;
             }
@@ -2004,8 +2021,10 @@
             if (stokValue > 0) pesanSukses = `Berhasil menambahkan ${stokValue} stok. Total stok ${nama} sekarang: ${dbBarang[idx].stok}`;
             alert(pesanSukses);
           } else {
+            // MODE BARU
             if (stokValue <= 0) return alert("Jumlah stok awal harus lebih dari 0");
             
+            // Cek kategori baru
             let kategoriExists = DAFTAR_KATEGORI.some(k => k.nama === kategori);
             if (!kategoriExists) {
               DAFTAR_KATEGORI.push({ nama: kategori, emoji: "📌", kelas: "badge-lainnya" });
@@ -2035,11 +2054,12 @@
           if (hargaBeliInput) hargaBeliInput.value = b.hargaBeli;
           if (hargaJualInput) hargaJualInput.value = b.hargaJual;
           
+          // FIX BUG: Kosongkan input stok saat edit agar user tidak salah menambah stok
           if (stokInput) stokInput.value = "";
           if (stokInput) stokInput.placeholder = `Kosongkan jika tidak ingin menambah stok (Stok saat ini: ${b.stok})`;
           
           if (btnBatalEdit) btnBatalEdit.style.display = "block";
-          if (infoStok) infoStok.style.display = "block";
+          if (infoStok) infoStok.style.display = "block"; // Tampilkan info bahwa stok akan ditambah
           if (namaInput) namaInput.focus();
           window.scrollTo(0, 0);
         };
@@ -2233,9 +2253,10 @@
           }
         };
 
+        // Inisialisasi
         renderStruk();
         simpanDb();
       })();
     </script>
   </body>
-</html>
+</html> cek
