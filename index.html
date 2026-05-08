@@ -886,7 +886,7 @@
         <div id="kasir" class="kasir-grid">
           <div class="card no-print">
             <h3>1. Scan Barcode</h3>
-            <input type="text" id="scanInput" placeholder="Klik disini lalu tembak scanner..." autofocus />
+            <input type="text" id="scanInput" placeholder="Klik disini lalu tembak scanner..." autofocus inputmode="none" />
             <div id="statusScan" class="status-scan"></div>
             <button class="btn-kamera" onclick="mulaiScanKamera('kasir')">📷 Buka Kamera HP</button>
             <button onclick="stopScanKamera()" id="btnStop" class="hide btn-hapus">Tutup Kamera</button>
@@ -985,9 +985,9 @@
               <option value="Kebutuhan Rumah">🧹 Kebutuhan Rumah</option>
               <option value="Lainnya">📦 Lainnya</option>
             </select>
-            <input type="number" id="hargaBeli" placeholder="Harga Pembelian / Modal" />
-            <input type="number" id="hargaJual" placeholder="Harga Penjualan / Jual" />
-            <input type="number" id="stok" placeholder="Jumlah Stok (Untuk Ditambahkan)" />
+            <input type="number" id="hargaBeli" placeholder="Harga Pembelian / Modal" inputmode="numeric" />
+            <input type="number" id="hargaJual" placeholder="Harga Penjualan / Jual" inputmode="numeric" />
+            <input type="number" id="stok" placeholder="Jumlah Stok (Untuk Ditambahkan)" inputmode="numeric" />
             <button onclick="simpanBarang()">💾 Simpan / Tambah Stok</button>
             <button onclick="batalEditBarang()" style="background: #64748b !important; display: none" id="btnBatalEdit">
               Batal Edit
@@ -1079,7 +1079,7 @@
           <hr style="border:0; border-top:1px dashed #cbd5e1; margin:15px 0;">
 
           <label style="font-size:13px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Uang Diterima</label>
-          <input type="number" id="bayarCheckout" class="input-bayar-modal" placeholder="0" oninput="hitungKembaliCheckout()" />
+          <input type="number" id="bayarCheckout" class="input-bayar-modal" placeholder="0" oninput="hitungKembaliCheckout()" inputmode="numeric" />
           
           <div class="uang-cepat-modal">
             <button onclick="setUangCheckout('pas')">Uang Pas</button>
@@ -1473,7 +1473,9 @@
             if (kategoriSelect) kategoriSelect.value = barangAda.kategori;
             if (hargaBeliInput) hargaBeliInput.value = barangAda.hargaBeli;
             if (hargaJualInput) hargaJualInput.value = barangAda.hargaJual;
-            if (stokInput) stokInput.focus();
+            // FIX BUG: Saat scan/barcode ditemukan, kosongkan stok agar tidak tertambah dobel saat edit
+            if (stokInput) stokInput.value = "";
+            if (stokInput) stokInput.placeholder = "Jumlah Stok (Untuk Ditambahkan)";
           } else if (infoBox) {
             infoBox.style.display = "none";
           }
@@ -1505,7 +1507,7 @@
               let katInfo = getInfoKategori(b.kategori);
               html += `<div class="dd-item" data-index="${i}" data-barcode="${b.barcode}" onclick="pilihDariDropdown('${b.barcode}')">
                 <div><div class="dd-nama">${namaHtml} <span class="dd-kategori">${katInfo.emoji} ${katInfo.nama}</span></div><div style="font-size:11px;color:#94a3b8">${b.barcode}</div></div>
-                <div class="dd-info"><div class="dd-harga">Rp${b.hargaJual.toLocaleString()}</div><div>Stok: ${b.stok}</div></div>
+                <div class="dd-info"><div class="dd-harga">Rp${b.hargaJual.toLocaleString('id-ID')}</div><div>Stok: ${b.stok}</div></div>
               </div>`;
             });
             dropdown.innerHTML = html;
@@ -1638,7 +1640,7 @@
 
               el.innerHTML = `
                   <div class="b-nama">${b.nama}</div>
-                  <div class="b-harga">Rp ${b.hargaJual.toLocaleString()}</div>
+                  <div class="b-harga">Rp ${b.hargaJual.toLocaleString('id-ID')}</div>
                   <div class="b-stok">
                       <span class="badge ${classStok}">${b.stok} (${textStok})</span>
                   </div>
@@ -1665,7 +1667,7 @@
           });
           
           let totalHargaKatalog = document.getElementById("totalHargaKatalog");
-          if (totalHargaKatalog) totalHargaKatalog.innerText = total.toLocaleString();
+          if (totalHargaKatalog) totalHargaKatalog.innerText = total.toLocaleString('id-ID');
         }
 
         function updatePaginationKatalog(totalItems) {
@@ -1733,16 +1735,16 @@
             tbody.innerHTML += `<tr>
               <td>${item.nama}</td>
               <td style="text-align:center">${item.qty}</td>
-              <td style="text-align:right">${item.hargaJual.toLocaleString()}</td>
-              <td style="text-align:right">${subtotal.toLocaleString()}</td>
+              <td style="text-align:right">${item.hargaJual.toLocaleString('id-ID')}</td>
+              <td style="text-align:right">${subtotal.toLocaleString('id-ID')}</td>
               <td style="text-align:right">${btnAksi}</td>
             </tr>`;
           });
           let laba = totalJual - totalModal;
           let totalHarga = document.getElementById("totalHarga");
           let labaStruk = document.getElementById("labaStruk");
-          if (totalHarga) totalHarga.innerText = totalJual.toLocaleString();
-          if (labaStruk) labaStruk.innerText = laba.toLocaleString();
+          if (totalHarga) totalHarga.innerText = totalJual.toLocaleString('id-ID');
+          if (labaStruk) labaStruk.innerText = laba.toLocaleString('id-ID');
         }
         
         window.hapusItemStruk = function(i) { 
@@ -1769,7 +1771,7 @@
             tbody.innerHTML += `<tr>
               <td>${item.nama}</td>
               <td style="text-align:center">${item.qty}</td>
-              <td style="text-align:right">${sub.toLocaleString()}</td>
+              <td style="text-align:right">${sub.toLocaleString('id-ID')}</td>
             </tr>`;
           });
 
@@ -1778,7 +1780,7 @@
           let kembaliCheckout = document.getElementById("kembaliCheckout");
           let modalCheckout = document.getElementById("modalCheckout");
           
-          if (checkoutTotal) checkoutTotal.innerText = totalJual.toLocaleString();
+          if (checkoutTotal) checkoutTotal.innerText = totalJual.toLocaleString('id-ID');
           if (bayarCheckout) bayarCheckout.value = "";
           if (kembaliCheckout) kembaliCheckout.innerText = "0";
           if (modalCheckout) modalCheckout.classList.add("show");
@@ -1799,8 +1801,14 @@
           
           if (nominal === "pas") {
             bayarCheckout.value = total;
+            // Kunci input jika uang pas agar user tidak salah ketik
+            bayarCheckout.readOnly = true;
+            setTimeout(() => { bayarCheckout.readOnly = false; }, 2000);
+          } else if (nominal === 0) {
+             bayarCheckout.value = "";
           } else {
             bayarCheckout.value = nominal;
+            bayarCheckout.readOnly = false;
           }
           hitungKembaliCheckout();
         };
@@ -1816,7 +1824,7 @@
           if (bayar < 0) bayar = 0;
           let kembali = bayar - total;
           
-          kembaliCheckout.innerText = kembali > 0 ? kembali.toLocaleString() : 0;
+          kembaliCheckout.innerText = kembali > 0 ? kembali.toLocaleString('id-ID') : 0;
         };
 
         // CETAK STRUK dengan anti duplikat
@@ -1911,7 +1919,7 @@
               <tr>
                 <td style="vertical-align:top">${item.nama.substring(0, 18)}</td>
                 <td style="text-align:center">x${item.qty}</td>
-                <td style="text-align:right">${(item.hargaJual * item.qty).toLocaleString()}</td>
+                <td style="text-align:right">${(item.hargaJual * item.qty).toLocaleString('id-ID')}</td>
               </tr>
             `;
           });
@@ -1919,9 +1927,9 @@
           printHTML += `
             </table>
             <div class="print-line"></div>
-            <div class="print-row print-total"><span>TOTAL</span><span>Rp ${totalJual.toLocaleString()}</span></div>
-            <div class="print-row"><span>TUNAI</span><span>Rp ${bayar.toLocaleString()}</span></div>
-            <div class="print-row"><span>KEMBALI</span><span>Rp ${kembali.toLocaleString()}</span></div>
+            <div class="print-row print-total"><span>TOTAL</span><span>Rp ${totalJual.toLocaleString('id-ID')}</span></div>
+            <div class="print-row"><span>TUNAI</span><span>Rp ${bayar.toLocaleString('id-ID')}</span></div>
+            <div class="print-row"><span>KEMBALI</span><span>Rp ${kembali.toLocaleString('id-ID')}</span></div>
             <div class="print-line"></div>
             <div class="print-footer">
               TERIMA KASIH<br>
@@ -1935,8 +1943,8 @@
           let modalSuccessTotal = document.getElementById("modalSuccessTotal");
           let modalSuccessKembali = document.getElementById("modalSuccessKembali");
           let modalKonfirmasi = document.getElementById("modalKonfirmasi");
-          if (modalSuccessTotal) modalSuccessTotal.innerText = totalJual.toLocaleString();
-          if (modalSuccessKembali) modalSuccessKembali.innerText = kembali.toLocaleString();
+          if (modalSuccessTotal) modalSuccessTotal.innerText = totalJual.toLocaleString('id-ID');
+          if (modalSuccessKembali) modalSuccessKembali.innerText = kembali.toLocaleString('id-ID');
 
           tutupModalCheckout();
           if (modalKonfirmasi) modalKonfirmasi.classList.add("show");
@@ -1994,17 +2002,28 @@
           if (!barcode || !nama) return alert("Isi Barcode dan Nama Barang");
           if (!kategori) return alert("Pilih kategori barang");
           if (hargaJual <= 0) return alert("Harga jual harus lebih dari 0");
-          if (stokValue <= 0) return alert("Jumlah stok yang ditambahkan harus lebih dari 0");
-
+          
+          // Cek mode: Tambah Baru atau Edit
           let idx = dbBarang.findIndex((b) => b.barcode === barcode);
+          
           if (idx >= 0) {
-            dbBarang[idx].stok += stokValue;
+            // MODE EDIT
+            // Jika stok kosong di input, berarti user tidak ingin mengubah stok saat edit
+            if (stokValue > 0) {
+               dbBarang[idx].stok += stokValue;
+            }
             dbBarang[idx].nama = nama;
             dbBarang[idx].kategori = kategori;
             dbBarang[idx].hargaBeli = hargaBeli;
             dbBarang[idx].hargaJual = hargaJual;
-            alert(`Berhasil menambahkan ${stokValue} stok. Total stok ${nama} sekarang: ${dbBarang[idx].stok}`);
+            
+            let pesanSukses = "Data barang berhasil diperbarui.";
+            if (stokValue > 0) pesanSukses = `Berhasil menambahkan ${stokValue} stok. Total stok ${nama} sekarang: ${dbBarang[idx].stok}`;
+            alert(pesanSukses);
           } else {
+            // MODE BARU
+            if (stokValue <= 0) return alert("Jumlah stok awal harus lebih dari 0");
+            
             // Cek kategori baru
             let kategoriExists = DAFTAR_KATEGORI.some(k => k.nama === kategori);
             if (!kategoriExists) {
@@ -2015,7 +2034,7 @@
           }
           batalEditBarang();
           simpanDb();
-          renderKatalog(); // Perbaikan: update katalog langsung
+          renderKatalog(); 
         };
 
         window.editBarang = function(i) {
@@ -2034,9 +2053,13 @@
           if (kategoriSelect) kategoriSelect.value = b.kategori;
           if (hargaBeliInput) hargaBeliInput.value = b.hargaBeli;
           if (hargaJualInput) hargaJualInput.value = b.hargaJual;
-          if (stokInput) stokInput.value = b.stok;
+          
+          // FIX BUG: Kosongkan input stok saat edit agar user tidak salah menambah stok
+          if (stokInput) stokInput.value = "";
+          if (stokInput) stokInput.placeholder = `Kosongkan jika tidak ingin menambah stok (Stok saat ini: ${b.stok})`;
+          
           if (btnBatalEdit) btnBatalEdit.style.display = "block";
-          if (infoStok) infoStok.style.display = "none";
+          if (infoStok) infoStok.style.display = "block"; // Tampilkan info bahwa stok akan ditambah
           if (namaInput) namaInput.focus();
           window.scrollTo(0, 0);
         };
@@ -2056,7 +2079,10 @@
           if (kategoriSelect) kategoriSelect.value = "";
           if (hargaBeliInput) hargaBeliInput.value = "";
           if (hargaJualInput) hargaJualInput.value = "";
-          if (stokInput) stokInput.value = "";
+          if (stokInput) {
+             stokInput.value = "";
+             stokInput.placeholder = "Jumlah Stok (Untuk Ditambahkan)";
+          }
           if (btnBatalEdit) btnBatalEdit.style.display = "none";
           if (infoStok) infoStok.style.display = "none";
         };
@@ -2125,9 +2151,9 @@
               <td style="font-size:11px">${b.barcode}</td>
               <td><b>${b.nama}</b></td>
               <td>${buatBadgeHtml(b.kategori)}</td>
-              <td style="font-size:12px">Rp${b.hargaBeli.toLocaleString()}</td>
-              <td style="font-size:12px">Rp${b.hargaJual.toLocaleString()}</td>
-              <td style="color:${labaColor};font-weight:600; font-size:12px">Rp${labaPerPcs.toLocaleString()}</td>
+              <td style="font-size:12px">Rp${b.hargaBeli.toLocaleString('id-ID')}</td>
+              <td style="font-size:12px">Rp${b.hargaJual.toLocaleString('id-ID')}</td>
+              <td style="color:${labaColor};font-weight:600; font-size:12px">Rp${labaPerPcs.toLocaleString('id-ID')}</td>
               <td><b>${b.stok}</b></td>
               <td><button class="btn-edit" onclick="editBarang(${asliIdx})">✏️</button><button class="btn-hapus" onclick="hapusBarang(${asliIdx})">🗑️</button></td>
             </tr>`;
@@ -2164,9 +2190,9 @@
             
             tbody.innerHTML += `<tr>
               <td style="font-size:12px">${waktu}</td>
-              <td>Rp${omset.toLocaleString()}</td>
-              <td>Rp${modal.toLocaleString()}</td>
-              <td style="color:${laba >= 0 ? '#16a34a' : '#dc2626'}">Rp${laba.toLocaleString()}</td>
+              <td>Rp${omset.toLocaleString('id-ID')}</td>
+              <td>Rp${modal.toLocaleString('id-ID')}</td>
+              <td style="color:${laba >= 0 ? '#16a34a' : '#dc2626'}">Rp${laba.toLocaleString('id-ID')}</td>
               <td style="font-size:11px">${t.item || '-'}</td>
             </tr>`;
           });
@@ -2178,9 +2204,9 @@
           let totalHariIni = document.getElementById("totalHariIni");
           let modalHariIni = document.getElementById("modalHariIni");
           let labaHariIni = document.getElementById("labaHariIni");
-          if (totalHariIni) totalHariIni.innerText = totalOmset.toLocaleString();
-          if (modalHariIni) modalHariIni.innerText = totalModal.toLocaleString();
-          if (labaHariIni) labaHariIni.innerText = totalLaba.toLocaleString();
+          if (totalHariIni) totalHariIni.innerText = totalOmset.toLocaleString('id-ID');
+          if (modalHariIni) modalHariIni.innerText = totalModal.toLocaleString('id-ID');
+          if (labaHariIni) labaHariIni.innerText = totalLaba.toLocaleString('id-ID');
         }
 
         window.exportCSV = function() {
