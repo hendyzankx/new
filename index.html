@@ -507,8 +507,11 @@
         color: var(--text-gelap);
         margin-bottom: 6px;
         display: -webkit-box;
+        display: box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
+        box-orient: vertical;
         overflow: hidden;
         line-height: 1.2;
       }
@@ -894,7 +897,18 @@
             <div class="filter-grid" id="filterGrid"></div>
             <div style="overflow-x: auto">
               <table id="tabelBarang">
-                <thead><tr><th>Barcode</th><th>Nama</th><th>Kategori</th><th>Modal</th><th>Jual</th><th>Laba</th><th>Stok</th><th>Aksi</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Barcode</th>
+                    <th>Nama</th>
+                    <th>Kategori</th>
+                    <th>Modal</th>
+                    <th>Jual</th>
+                    <th>Laba</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -916,7 +930,18 @@
           <div class="card" style="margin-top: 20px">
             <h3>Riwayat Transaksi</h3>
             <div style="overflow-x: auto">
-              <table id="tabelLaporan"><thead><tr><th>Waktu</th><th>Omset</th><th>Modal</th><th>Laba</th><th>Detail Item</th></tr></thead><tbody></tbody></table>
+              <table id="tabelLaporan">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Omset</th>
+                    <th>Modal</th>
+                    <th>Laba</th>
+                    <th>Detail Item</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -958,7 +983,9 @@
         <div class="modal-body">
           <div class="checkout-items">
             <table>
-              <thead><tr><th>Barang</th><th style="text-align:center">Qty</th><th style="text-align:right">Total</th></tr></thead>
+              <thead>
+                <tr><th>Barang</th><th style="text-align:center">Qty</th><th style="text-align:right">Total</th></tr>
+              </thead>
               <tbody id="tabelCheckout"></tbody>
             </table>
           </div>
@@ -1541,7 +1568,7 @@
           struk.forEach((item) => {
               let subtotal = item.hargaJual * item.qty;
               total += subtotal;
-              tbody.innerHTML += `<table><td style="padding:8px;">${item.nama}</td><td style="padding:8px; text-align:right; font-weight:600;">x${item.qty}</td></tr>`;
+              tbody.innerHTML += `<tr><td style="padding:8px;">${item.nama}</td><td style="padding:8px; text-align:right; font-weight:600;">x${item.qty}</td></tr>`;
           });
           
           let totalHargaKatalog = document.getElementById("totalHargaKatalog");
@@ -1611,7 +1638,13 @@
             totalJual += subtotal;
             totalModal += modalTotal;
             let btnAksi = `<button class="btn-qty-kecil btn-qty-minus" onclick="kurangiJumlah(${i})">-</button><button class="btn-qty-kecil" onclick="tambahJumlah(${i})">+</button><button class="btn-hapus" onclick="hapusItemStruk(${i})" title="Hapus">X</button>`;
-            tbody.innerHTML += `<tr><td>${item.nama}</td><td style="text-align:center">${item.qty}</td><td style="text-align:right">${item.hargaJual.toLocaleString()}</td><td style="text-align:right">${subtotal.toLocaleString()}</td><td style="text-align:right">${btnAksi}</td></tr>`;
+            tbody.innerHTML += `<tr>
+              <td>${item.nama}</td>
+              <td style="text-align:center">${item.qty}</td>
+              <td style="text-align:right">${item.hargaJual.toLocaleString()}</td>
+              <td style="text-align:right">${subtotal.toLocaleString()}</td>
+              <td style="text-align:right">${btnAksi}</td>
+            </tr>`;
           });
           let laba = totalJual - totalModal;
           let totalHarga = document.getElementById("totalHarga");
@@ -1642,7 +1675,11 @@
           struk.forEach((item) => {
             let sub = item.hargaJual * item.qty;
             totalJual += sub;
-            tbody.innerHTML += `<tr><td>${item.nama}</td><td style="text-align:center">${item.qty}</td><td style="text-align:right">${sub.toLocaleString()}</td></tr>`;
+            tbody.innerHTML += `<tr>
+              <td>${item.nama}</table>
+              <td style="text-align:center">${item.qty}</td>
+              <td style="text-align:right">${sub.toLocaleString()}</td>
+            </tr>`;
           });
 
           let checkoutTotal = document.getElementById("checkoutTotal");
@@ -1927,7 +1964,16 @@
             let asliIdx = dbBarang.indexOf(b);
             let labaPerPcs = b.hargaJual - b.hargaBeli;
             let labaColor = labaPerPcs >= 0 ? "var(--hijau)" : "var(--merah)";
-            tbody.innerHTML += `<tr><td style="font-size:11px">${b.barcode}</td><td><b>${b.nama}</b></td><td>${buatBadgeHtml(b.kategori)}</td><td>Rp${b.hargaBeli.toLocaleString()}</td><td>Rp${b.hargaJual.toLocaleString()}</td><td style="color:${labaColor};font-weight:600; font-size:12px">Rp${labaPerPcs.toLocaleString()}</td><td><b>${b.stok}</b></td><td><button class="btn-edit" onclick="editBarang(${asliIdx})">✏️</button><button class="btn-hapus" onclick="hapusBarang(${asliIdx})">🗑️</button></td></tr>`;
+            tbody.innerHTML += `<tr>
+              <td style="font-size:11px">${b.barcode}</td>
+              <td><b>${b.nama}</b></td>
+              <td>${buatBadgeHtml(b.kategori)}</td>
+              <td style="font-size:12px">Rp${b.hargaBeli.toLocaleString()}</td>
+              <td style="font-size:12px">Rp${b.hargaJual.toLocaleString()}</td>
+              <td style="color:${labaColor};font-weight:600; font-size:12px">Rp${labaPerPcs.toLocaleString()}</td>
+              <td><b>${b.stok}</b></td>
+              <td><button class="btn-edit" onclick="editBarang(${asliIdx})">✏️</button><button class="btn-hapus" onclick="hapusBarang(${asliIdx})">🗑️</button></td>
+            </tr>`;
           });
           if (daftarTampil.length === 0) {
             tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#94a3b8">Tidak ada barang dalam kategori ini</td></tr>`;
@@ -1960,13 +2006,13 @@
             totalModal += modal;
             totalLaba += laba;
             
-            tbody.innerHTML += `<td>
+            tbody.innerHTML += `<tr>
               <td style="font-size:12px">${waktu}</td>
               <td>Rp${omset.toLocaleString()}</td>
               <td>Rp${modal.toLocaleString()}</td>
               <td style="color:${laba >= 0 ? '#16a34a' : '#dc2626'}">Rp${laba.toLocaleString()}</td>
               <td style="font-size:11px">${t.item || '-'}</td>
-            </table>`;
+            <tr>`;
           });
           
           if (dbTransaksi.filter(t => t.waktu && t.waktu.includes(hariIni)).length === 0) {
