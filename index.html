@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Kasir Pro Offline - Versi Flat</title>
+    <title>Kasir Pro Offline - Stabil Tanpa Sliding</title>
     <meta name="theme-color" content="#2563eb" />
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <link
@@ -45,14 +45,11 @@
         display: flex;
         flex-direction: column;
       }
-      
-      /* HEADER */
       .header {
         background: linear-gradient(135deg, var(--biru), var(--biru-gelap));
         color: white;
         padding: 20px;
         text-align: center;
-        position: relative;
       }
       .header h1 {
         font-size: 22px;
@@ -63,59 +60,6 @@
         font-size: 13px;
         opacity: 0.9;
       }
-      .btn-back-menu {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255,255,255,0.2);
-        border: none;
-        color: white;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 18px;
-        display: none; /* Tersembunyi default */
-        align-items: center;
-        justify-content: center;
-      }
-      .btn-back-menu:hover { background: rgba(255,255,255,0.3); }
-
-      /* MENU UTAMA */
-      .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 15px;
-        padding: 20px;
-        flex: 1;
-        align-content: start;
-      }
-      .menu-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px 10px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.1s;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-      }
-      .menu-card:hover {
-        border-color: var(--biru);
-        background: #eff6ff;
-        transform: translateY(-2px);
-      }
-      .menu-card:active {
-        transform: scale(0.98);
-      }
-      .menu-icon { font-size: 32px; }
-      .menu-label { font-weight: 600; color: var(--text-gelap); font-size: 15px; }
-
       .tabs {
         display: flex;
         background: #e2e8f0;
@@ -132,7 +76,7 @@
         font-size: 14px;
         white-space: nowrap;
         color: #64748b;
-        transition: all 0.2s;
+        transition: none;
         min-width: 80px;
       }
       .tabs button.aktif {
@@ -205,7 +149,7 @@
         display: block;
         text-align: center;
         line-height: 1.4;
-        transition: opacity 0.2s;
+        transition: none; /* semua sliding dinonaktifkan */
       }
       button:active {
         transform: scale(0.98);
@@ -369,7 +313,6 @@
         display: none !important;
       }
       
-      /* MODAL TANPA ANIMASI SLIDING */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -384,7 +327,7 @@
         align-items: center;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.2s; /* Hanya fade in/out */
+        transition: opacity 0.2s; /* hanya fade, tidak ada sliding */
       }
       .modal-overlay.show {
         opacity: 1;
@@ -400,7 +343,9 @@
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         display: flex;
         flex-direction: column;
-        /* Hapus transform translateY agar tidak sliding */
+        /* HAPUS semua sliding: tidak ada translate, tidak ada transition */
+        transform: none !important;
+        transition: none !important;
       }
       
       .modal-header {
@@ -499,7 +444,7 @@
         display: grid;
         grid-template-columns: 1fr;
         gap: 20px;
-        padding-bottom: 180px; 
+        padding-bottom: 20px; /* dikurangi karena tidak ada sliding */
       }
       @media (min-width: 850px) {
         .katalog-layout {
@@ -518,7 +463,6 @@
         }
       }
 
-      /* STICKY CART HP TANPA ANIMASI SLIDING */
       @media (max-width: 849px) {
         .sticky-mobile-cart {
           position: fixed;
@@ -532,7 +476,7 @@
           box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
           border-top: 1px solid #e2e8f0;
           border-radius: 20px 20px 0 0;
-          /* Hapus animasi slideUp */
+          animation: none; /* tidak ada sliding */
         }
         .sticky-mobile-cart h3 {
           margin-bottom: 8px;
@@ -540,6 +484,8 @@
         }
       }
       
+      /* keyframes slideUp dihapus (tidak dipakai) */
+
       .katalog-search-bar {
         position: sticky;
         top: 0;
@@ -562,7 +508,8 @@
         border-radius: 8px;
         padding: 12px;
         cursor: pointer;
-        transition: all 0.1s;
+        /* hilangkan sliding hover */
+        transition: none;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -574,7 +521,7 @@
       .barang-card:hover {
         border-color: var(--biru);
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-        transform: translateY(-2px);
+        transform: none; /* tidak ada translate */
       }
 
       .barang-card.stok-kosong {
@@ -710,7 +657,7 @@
         align-items: center;
         border-bottom: 1px solid #f1f5f9;
         font-size: 13px;
-        transition: background 0.1s;
+        transition: none; /* tidak sliding */
       }
       .dd-item:last-child { border-bottom: none; border-radius: 0 0 8px 8px; }
       .dd-item:hover, .dd-item.diangkat { background: #f0fdf4; }
@@ -750,12 +697,11 @@
         border: 2px solid #cbd5e1;
         background: white;
         color: #475569;
-        transition: all 0.15s;
+        transition: none;
       }
       .filter-chip:hover { border-color: var(--biru); color: var(--biru); }
       .filter-chip.aktif { background: var(--biru); color: white; border-color: var(--biru); }
 
-      /* TOAST TANPA ANIMASI SLIDING */
       .toast-container {
         position: fixed;
         bottom: 20px;
@@ -779,12 +725,16 @@
         align-items: center;
         gap: 12px;
         opacity: 0;
-        /* Hapus transform translateY agar tidak geser */
-        transition: opacity 0.3s;
+        /* hilangkan sliding (tidak ada translate) */
+        transform: none;
+        transition: opacity 0.2s ease;
         pointer-events: auto;
         border-left: 6px solid var(--hijau);
       }
-      .toast.show { opacity: 1; }
+      .toast.show {
+        opacity: 1;
+        transform: none;
+      }
       .toast-icon { font-size: 24px; color: var(--hijau); flex-shrink: 0; }
       .toast-content { flex: 1; }
       .toast-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; color: #1e293b; }
@@ -920,37 +870,11 @@
 
     <div class="app">
       <div class="header no-print">
-        <button id="btnBackMenu" class="btn-back-menu" onclick="kembaliKeMenu()">⬅️</button>
-        <h1 id="headerAppName">💰 KASIR PRO</h1>
-        <small id="headerAppDesc">Sistem Kasir Offline</small>
+        <h1 id="headerAppName">💰 KASIR PRO OFFLINE</h1>
+        <small id="headerAppDesc">Scan cepat, atur jumlah, tanpa sliding</small>
       </div>
 
-      <!-- MENU UTAMA (Dashboard) -->
-      <div id="menuUtama" class="menu-grid no-print">
-        <div class="menu-card" onclick="masukFitur('kasir')">
-          <div class="menu-icon">🛒</div>
-          <div class="menu-label">Kasir</div>
-        </div>
-        <div class="menu-card" onclick="masukFitur('katalog')">
-          <div class="menu-icon">📑</div>
-          <div class="menu-label">Katalog</div>
-        </div>
-        <div class="menu-card" onclick="masukFitur('barang')">
-          <div class="menu-icon">📦</div>
-          <div class="menu-label">Barang</div>
-        </div>
-        <div class="menu-card" onclick="masukFitur('laporan')">
-          <div class="menu-icon">📊</div>
-          <div class="menu-label">Laporan</div>
-        </div>
-        <div class="menu-card" onclick="masukFitur('pengaturan')">
-          <div class="menu-icon">⚙️</div>
-          <div class="menu-label">Pengaturan</div>
-        </div>
-      </div>
-
-      <!-- NAVIGASI TABS (Tersembunyi saat di Menu) -->
-      <div class="tabs no-print hide" id="tabContainer">
+      <div class="tabs no-print">
         <button onclick="gantiTab('kasir')" id="tabKasir" class="aktif">🛒 Kasir</button>
         <button onclick="gantiTab('katalog')" id="tabKatalog">📑 Katalog</button>
         <button onclick="gantiTab('barang')" id="tabBarang">Barang</button>
@@ -958,8 +882,7 @@
         <button onclick="gantiTab('pengaturan')" id="tabPengaturan">⚙️ Pengaturan</button>
       </div>
 
-      <!-- KONTEN FITUR (Tersembunyi saat di Menu) -->
-      <div class="konten hide" id="appContent">
+      <div class="konten">
         <div id="kasir" class="kasir-grid">
           <div class="card no-print">
             <h3>1. Scan Barcode</h3>
@@ -1204,7 +1127,7 @@
 
     <script>
       (function() {
-        // ============ DATA ============
+        // ============ DATA (sama seperti kode asli, tidak ada perubahan logika) ============
         let dbBarang = JSON.parse(localStorage.getItem("barang") || "[]");
         let dbTransaksi = JSON.parse(localStorage.getItem("transaksi") || "[]");
         let dbPengaturan = JSON.parse(localStorage.getItem("pengaturan") || "{}");
@@ -1245,7 +1168,6 @@
           simpanDb();
         }
 
-        // ============ FUNGSI UTAMA ============
         function showLoading() { let el = document.getElementById("loadingOverlay"); if (el) el.classList.remove("hide"); }
         function hideLoading() { let el = document.getElementById("loadingOverlay"); if (el) el.classList.add("hide"); }
 
@@ -1289,38 +1211,11 @@
           if (header) header.innerText = dbPengaturan.namaToko || "KASIR PRO";
         }
 
-        // NAVIGASI MENU
-        window.masukFitur = function(tab) {
-          // Sembunyikan Menu Utama
-          document.getElementById("menuUtama").classList.add("hide");
-          // Tampilkan Tabs dan Konten Aplikasi
-          document.getElementById("tabContainer").classList.remove("hide");
-          document.getElementById("appContent").classList.remove("hide");
-          // Tampilkan Tombol Back
-          document.getElementById("btnBackMenu").style.display = "flex";
-          // Ganti Tab
-          gantiTab(tab);
-        };
-
-        window.kembaliKeMenu = function() {
-          // Sembunyikan Tabs dan Konten Aplikasi
-          document.getElementById("tabContainer").classList.add("hide");
-          document.getElementById("appContent").classList.add("hide");
-          // Tampilkan Menu Utama
-          document.getElementById("menuUtama").classList.remove("hide");
-          // Sembunyikan Tombol Back
-          document.getElementById("btnBackMenu").style.display = "none";
-          // Stop kamera jika sedang nyala
-          stopScanKamera();
-        };
-
         window.gantiTab = function(tab) {
-          // Simpan keranjang sebelum pindah
           sessionStorage.setItem("struk_sementara", JSON.stringify(struk));
-          
           stopScanKamera();
           tutupDropdown();
-          document.querySelectorAll("#appContent > div[id]").forEach((d) => d.classList.add("hide"));
+          document.querySelectorAll(".konten > div[id]").forEach((d) => d.classList.add("hide"));
           let target = document.getElementById(tab);
           if (target) target.classList.remove("hide");
           document.querySelectorAll(".tabs button").forEach((b) => b.classList.remove("aktif"));
@@ -1329,7 +1224,6 @@
           if (aktifBtn) aktifBtn.classList.add("aktif");
           
           if (tab === "kasir") {
-              // Restore keranjang
               let saved = sessionStorage.getItem("struk_sementara");
               if (saved) {
                 try {
@@ -1469,7 +1363,7 @@
             gain.gain.value = 0.1;
             osc.start();
             osc.stop(ctx.currentTime + 0.1);
-          } catch (e) { console.log("Beep tidak didukung di browser ini"); }
+          } catch (e) { console.log("Beep tidak didukung"); }
         }
 
         window.mulaiScanKamera = function(mode) {
@@ -1663,7 +1557,6 @@
             inputCari.value = "";
             inputCari.focus();
           }
-          // Fokus ke scan input
           let scanInput = document.getElementById("scanInput");
           if (scanInput) scanInput.focus();
         };
@@ -1932,12 +1825,9 @@
             return;
           }
           isPrintingNow = true;
-          
           let btnCetak = document.querySelector('#modalKonfirmasi .modal-body button:last-child');
           if (btnCetak) btnCetak.disabled = true;
-          
           window.print();
-          
           setTimeout(() => { 
             isPrintingNow = false;
             if (btnCetak) btnCetak.disabled = false;
@@ -2343,7 +2233,6 @@
           }
         };
 
-        // Inisialisasi
         renderStruk();
         simpanDb();
       })();
