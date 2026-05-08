@@ -436,7 +436,7 @@
         font-weight: 700;
       }
 
-      /* --- STYLE BARU UNTUK PILIH BARANG --- */
+      /* --- STYLE BARU UNTUK PILIH BARANG (GRID + PAGING) --- */
       .cari-wrap {
         position: relative;
         margin-bottom: 15px;
@@ -538,7 +538,36 @@
         width: 100% !important;
         border-radius: 6px !important;
       }
-      /* ------------------------------------ */
+
+      /* PAGING STYLES */
+      .pagination-container {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: #64748b;
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+      .pagination-btn {
+        background: white !important;
+        border: 1px solid #cbd5e1 !important;
+        color: var(--biru) !important;
+        width: auto !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        margin: 0 !important;
+      }
+      .pagination-btn:disabled {
+        background: #f1f5f9 !important;
+        color: #cbd5e1 !important;
+        border-color: #f1f5f9 !important;
+        cursor: not-allowed;
+      }
+      /* --------------------------------------------------- */
 
       .pencarian-wrap {
         position: relative;
@@ -767,15 +796,21 @@
               <div id="dropdownHasil"></div>
             </div>
 
-            <!-- BAGIAN YANG DIUBAH: PILIH BARANG -->
+            <!-- BAGIAN YANG DIUBAH: PILIH BARANG (GRID + PAGING) -->
             <h3 style="margin-top: 20px">3. Pilih dari Daftar (Klik)</h3>
             <div class="cari-wrap">
-              <input type="text" id="cariDaftarBarang" placeholder="Filter barang di bawah ini..." oninput="renderGridPilihBarang()">
+              <input type="text" id="cariDaftarBarang" placeholder="Filter barang di bawah ini..." oninput="renderGridPilihBarang()" />
               <span class="icon-search">🔍</span>
             </div>
             
             <div id="gridPilihBarang">
               <!-- Kartu barang akan muncul di sini -->
+            </div>
+
+            <div class="pagination-container">
+              <button class="pagination-btn" id="btnPrevPage" onclick="gantiHalaman(-1)">❮ Sebelumnya</button>
+              <span id="halamanInfo">Hal 1 dari 1</span>
+              <button class="pagination-btn" id="btnNextPage" onclick="gantiHalaman(1)">Selanjutnya ❯</button>
             </div>
             
             <div class="qty-inline" id="qtyInlineCari" style="margin-top: 10px;">
@@ -993,9 +1028,13 @@
       const SCAN_DELAY_MS = 1000;
 
       let barangTerpilihCari = null;
-      let barangTerpilihGrid = null; // Untuk menyimpan barang yang dipilih dari Grid baru
+      let barangTerpilihGrid = null; 
       let indeksDiangkat = -1;
       let filterKategoriAktif = "";
+
+      // Variabel Paging
+      let currentPage = 1;
+      const itemsPerPage = 24; // Jumlah barang per halaman (Grid 3 kolom x 8 baris)
 
       if (dbBarang.length === 0) {
         dbBarang = [
@@ -1327,11 +1366,17 @@
       /* -------------------------------------- */
 
 
-      /* --- LOGIKA GRID PILIH BARANG (BARU) --- */
+      /* --- LOGIKA GRID PILIH BARANG (GRID + PAGING) --- */
       function renderGridPilihBarang() {
         let grid = document.getElementById("gridPilihBarang");
         let q = document.getElementById("cariDaftarBarang").value.trim().toLowerCase();
         
+        // Reset ke halaman 1 jika user mengetik pencarian baru
+        // (Kecuali jika dipanggil dari fungsi gantiHalaman)
+        if (!window.isPaging) {
+            currentPage = 1;
+        }
+
         grid.innerHTML = "";
 
         let hasil = dbBarang.filter((b) => {
@@ -1340,10 +1385,21 @@
 
         if (hasil.length === 0) {
             grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #94a3b8;">Tidak ada barang ditemukan.</div>`;
+            updatePaginationControls(0);
             return;
         }
 
-        hasil.forEach((b) => {
+        // LOGIKA PAGING
+        let totalItems = hasil.length;
+        let totalPages = Math.ceil(totalItems / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        let startIndex = (currentPage - 1) * itemsPerPage;
+        let endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+        let itemsToShow = hasil.slice(startIndex, endIndex);
+
+        itemsToShow.forEach((b) => {
             let classStok = "aman";
             let textStok = "Aman";
             if (b.stok <= 0) { classStok = "bahaya"; textStok = "Habis"; }
@@ -1363,6 +1419,32 @@
             `;
             grid.appendChild(el);
         });
+
+        updatePaginationControls(totalItems);
+        
+        // Reset flag paging
+        window.isPaging = false;
+      }
+
+      function updatePaginationControls(totalItems) {
+        let info = document.getElementById("halamanInfo");
+        let btnPrev = document.getElementById("btnPrevPage");
+        let btnNext = document.getElementById("btnNextPage");
+        
+        let totalPages = Math.ceil(totalItems / itemsPerPage);
+        if (totalItems === 0) totalPages = 0;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        info.innerText = `Hal ${currentPage} dari ${totalPages}`;
+
+        btnPrev.disabled = currentPage <= 1;
+        btnNext.disabled = currentPage >= totalPages || totalPages === 0;
+      }
+
+      function gantiHalaman(delta) {
+        window.isPaging = true; // Biarkan fungsi render tahu kita ganti halaman, bukan ketik baru
+        currentPage += delta;
+        renderGridPilihBarang();
       }
 
       function pilihDariGrid(barcode) {
@@ -1379,7 +1461,7 @@
         qtyInput.select();
         
         // Visual feedback pada grid (opsional)
-        renderGridPilihBarang();
+        // renderGridPilihBarang(); 
       }
 
       function tambahDariGrid() {
@@ -1398,8 +1480,6 @@
         // Reset selection
         barangTerpilihGrid = null;
         document.getElementById("qtyPilihDaftar").value = 1;
-        // Refresh grid untuk update stok visual (meski real stok berkurang nanti pas bayar)
-        // renderGridPilihBarang(); // Opsional, jika ingin refresh grid setiap klik
       }
       /* ------------------------------------- */
 
@@ -1596,6 +1676,8 @@
         document.getElementById("cariDaftarBarang").value = "";
         barangTerpilihGrid = null;
         document.getElementById("qtyPilihDaftar").value = 1;
+        currentPage = 1;
+        window.isPaging = false;
         renderGridPilihBarang();
         
         document.getElementById("scanInput").focus();
