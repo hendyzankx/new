@@ -31,7 +31,7 @@
       body {
         background: var(--abu);
         padding: 10px;
-        padding-bottom: 90px; /* Space untuk layout umum */
+        padding-bottom: 90px;
       }
       .app {
         max-width: 1200px;
@@ -800,6 +800,39 @@
         gap: 15px;
         margin-bottom: 20px;
       }
+
+      /* ================= AREA CETAK STRUK ================= */
+      #printArea {
+        display: none;
+      }
+
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #printArea, #printArea * {
+          visibility: visible;
+        }
+        #printArea {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 58mm; /* Standar kertas thermal kecil */
+          padding: 2mm;
+          font-family: 'Courier New', Courier, monospace; /* Font ala mesin kasir */
+          font-size: 11px;
+          color: black;
+          background: white;
+          margin: 0;
+        }
+        .print-header { text-align: center; font-weight: bold; margin-bottom: 5px; font-size: 12px; text-transform: uppercase; }
+        .print-sub { text-align: center; font-size: 9px; margin-bottom: 8px; }
+        .print-line { border-top: 1px dashed black; margin: 5px 0; }
+        .print-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
+        .print-col { text-align: right; }
+        .print-total { font-weight: bold; margin-top: 5px; font-size: 12px; }
+        .print-footer { text-align: center; margin-top: 10px; font-size: 10px; }
+      }
     </style>
   </head>
   <body>
@@ -807,6 +840,9 @@
       <div class="spinner"></div>
       <div>Memproses...</div>
     </div>
+
+    <!-- HIDDEN PRINT AREA -->
+    <div id="printArea"></div>
 
     <div class="app">
       <div class="header no-print">
@@ -1089,6 +1125,8 @@
           </div>
 
           <button class="btn-selesai" onclick="tutupModalSelesai()">TRANSAKSI BARU</button>
+          <!-- TAMBAHAN TOMBOL CETAK -->
+          <button onclick="cetakStruk()" style="background: var(--oren) !important; margin-top: 10px; border: none;">🖨️ CETAK STRUK</button>
         </div>
       </div>
     </div>
@@ -1772,6 +1810,11 @@
           kembaliCheckout.innerText = kembali > 0 ? kembali.toLocaleString() : 0;
         };
 
+        // ============ CETAK STRUK ============
+        window.cetakStruk = function() {
+          window.print();
+        };
+
         window.prosesBayar = function() {
           let checkoutTotal = document.getElementById("checkoutTotal");
           let bayarCheckout = document.getElementById("bayarCheckout");
@@ -1825,6 +1868,43 @@
           simpanDb();
 
           let kembali = bayar - totalJual;
+          
+          // Siapkan HTML Struk untuk dicetak
+          let printHTML = `
+            <div class="print-header">${dbPengaturan.namaToko}</div>
+            <div class="print-sub">${dbPengaturan.alamatToko}</div>
+            <div class="print-sub">Telp: ${dbPengaturan.teleponToko}</div>
+            <div class="print-line"></div>
+            <div class="print-row"><span>TGL: ${new Date().toLocaleString('id-ID')}</span></div>
+            <div class="print-row"><span>ID: ${Date.now()}</span></div>
+            <div class="print-line"></div>
+          `;
+
+          struk.forEach((item) => {
+            printHTML += `
+              <div class="print-row">
+                <span style="width:60%;">${item.nama.substring(0, 16)}</span>
+                <span style="width:10%; text-align:center;">x${item.qty}</span>
+                <span style="width:30%; text-align:right;">${(item.hargaJual * item.qty).toLocaleString()}</span>
+              </div>
+            `;
+          });
+
+          printHTML += `
+            <div class="print-line"></div>
+            <div class="print-row print-total"><span>TOTAL</span><span>Rp ${totalJual.toLocaleString()}</span></div>
+            <div class="print-row"><span>TUNAI</span><span>Rp ${bayar.toLocaleString()}</span></div>
+            <div class="print-row"><span>KEMBALI</span><span>Rp ${kembali.toLocaleString()}</span></div>
+            <div class="print-line"></div>
+            <div class="print-footer">
+              TERIMA KASIH<br>
+              BARANG YANG SUDAH DIBELI<br>
+              TIDAK DAPAT DITUKAR
+            </div>
+          `;
+          
+          document.getElementById("printArea").innerHTML = printHTML;
+
           let modalSuccessTotal = document.getElementById("modalSuccessTotal");
           let modalSuccessKembali = document.getElementById("modalSuccessKembali");
           let modalKonfirmasi = document.getElementById("modalKonfirmasi");
