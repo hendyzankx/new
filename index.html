@@ -21,73 +21,121 @@
         .icon-circle { background: #eef3fc; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; border-radius: 32px; font-size: 28px; color: #1f4973; }
         .menu-title { font-weight: 700; font-size: 15px; color: #1a2c3e; margin-bottom: 4px; }
         .menu-desc { font-size: 11px; color: #7e8a9e; font-weight: 500; }
-        .kasir-page, .tambahstok-page, .pengaturan-page, .laporan-page, .riwayat-page, .pengeluaran-page, .cetakresi-page, .sekuriti-page { display: none; padding: 18px 16px; max-width: 550px; margin: 0 auto; }
+        
+        /* Pages */
+        .kasir-page, .tambahstok-page, .pengaturan-page, .laporan-page, .riwayat-page, .pengeluaran-page, .cetakresi-page, .sekuriti-page { display: none; padding: 18px 16px; max-width: 550px; margin: 0 auto; animation: fadeIn 0.3s; }
         .kasir-page.active, .tambahstok-page.active, .pengaturan-page.active, .laporan-page.active, .riwayat-page.active, .pengeluaran-page.active, .cetakresi-page.active, .sekuriti-page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .back-btn { background: #eef2fa; border: none; padding: 10px 18px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; color: #1f4973; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer; }
+        
         .scanner-card, .product-search-card, .cart-card, .form-stok-card, .list-stok-card, .settings-card, .filter-card, .stats-card, .chart-card, .transactions-card, .top-products-card { background: white; border-radius: 32px; padding: 18px 16px; margin-bottom: 20px; box-shadow: 0 8px 22px rgba(0,0,0,0.06); }
+        .section-title { font-weight: 700; font-size: 1.1rem; color: #1e2f41; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+
         .qr-reader-wrapper { background: #000; border-radius: 24px; overflow: hidden; margin-bottom: 16px; min-height: 200px; }
         .scan-controls { display: flex; gap: 12px; justify-content: center; margin: 12px 0 8px; flex-wrap: wrap; }
         .btn-scan { background: #eef2fa; border: none; padding: 10px 20px; border-radius: 44px; font-weight: 600; font-size: 0.85rem; color: #1f4973; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; }
         .btn-scan-primary { background: #1c6e9f; color: white; }
         .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; }
+        
         .btn-filter { background: #eef2fa; border: none; padding: 10px 18px; border-radius: 44px; font-weight: 600; font-size: 0.8rem; color: #1f4973; cursor: pointer; }
         .btn-filter.active { background: #1c6e9f; color: white; }
+        
         .search-box { display: flex; align-items: center; background: #f0f2f8; border-radius: 40px; padding: 10px 16px; gap: 10px; margin-bottom: 16px; }
         .search-box input { border: none; background: transparent; outline: none; font-size: 0.9rem; width: 100%; }
         .product-list-search { max-height: 300px; overflow-y: auto; }
         .product-item-search { display: flex; justify-content: space-between; align-items: center; padding: 14px; border-bottom: 1px solid #eef2f5; cursor: pointer; transition: background 0.2s; }
         .product-item-search:hover { background: #f8fafd; }
+        
         .input-group { margin-bottom: 14px; }
         .input-group label { font-size: 0.75rem; font-weight: 600; color: #3b4e6b; display: block; margin-bottom: 6px; }
         .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 14px 16px; border-radius: 28px; border: 1px solid #dce3ec; font-size: 0.9rem; outline: none; transition: border 0.2s; }
         .input-group input:focus { border-color: #1c6e9f; }
+        
         .row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .btn-add-cart, .btn-add-stok, .btn-save, .btn-checkout, .btn-primary { background: #1f8a4c; color: white; border: none; border-radius: 60px; padding: 14px; font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
         .btn-add-stok:active, .btn-save:active, .btn-primary:active { transform: scale(0.98); }
         .btn-checkout { background: #e9792c; margin-top: 16px; }
         .btn-primary { background: #1c6e9f; }
         .btn-danger { background: #d32f2f; }
+        .btn-secondary { background: #6c757d; color: white; }
+
         .cart-items, .produk-list, .transaction-list, .expense-list, .history-list, .log-list { max-height: 300px; overflow-y: auto; margin: 10px 0; }
         .cart-item, .produk-item, .transaction-item, .expense-item, .history-item, .log-item { padding: 12px 0; border-bottom: 1px solid #eef2f5; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; }
         .cart-total { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; padding-top: 14px; border-top: 2px dashed #dce3ec; }
+        
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
         .stat-item { text-align: center; padding: 12px; background: #f8fafd; border-radius: 24px; }
         .stat-value { font-size: 1.3rem; font-weight: 800; color: #1e2f41; }
         .stat-label { font-size: 0.7rem; color: #6c7e9e; margin-top: 4px; }
-        canvas { max-height: 220px; width: 100%; }
-        .rank { width: 30px; font-weight: 800; color: #1c6e9f; }
-        .product-sold { font-weight: 700; color: #e9792c; }
-        .product-revenue { font-weight: 800; color: #1f8a4c; }
-        .reset-btn { background: none; border: none; color: #a00; font-size: 0.7rem; margin-left: auto; cursor: pointer; }
+        
         .remove-item-btn, .btn-hapus { background: none; border: none; color: #c00; font-size: 1.2rem; cursor: pointer; padding: 0 8px; }
         .stok-badge { background: #e8f5e9; padding: 4px 12px; border-radius: 40px; font-size: 0.75rem; font-weight: 700; color: #2e7d32; display: inline-block; }
         .produk-detail { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; font-size: 0.75rem; }
+        
         .empty-list { text-align: center; color: #aaa; padding: 20px; }
+        
         .fab-kasir-container { position: fixed; bottom: 20px; left: 16px; right: 16px; z-index: 20; display: flex; justify-content: center; pointer-events: none; }
         .btn-kasir-utama { background: linear-gradient(105deg, #1c6e9f, #0f405e); border: none; border-radius: 60px; padding: 14px 24px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,20,40,0.25); display: flex; align-items: center; justify-content: center; gap: 12px; color: white; font-weight: 700; font-size: 17px; width: 90%; max-width: 320px; pointer-events: auto; transition: transform 0.1s; }
         .btn-kasir-utama:active { transform: scale(0.97); }
+        
         .toast-msg { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) scale(0.92); background: rgba(20,28,40,0.95); color: white; padding: 10px 20px; border-radius: 40px; font-size: 0.8rem; z-index: 1000; opacity: 0; transition: 0.2s; pointer-events: none; text-align: center; }
         .toast-msg.show { opacity: 1; transform: translateX(-50%) scale(1); }
-        .bottom-spacer { height: 70px; }
-        .footer-note { text-align: center; font-size: 11px; color: #8d9bb0; padding: 16px 20px 8px; border-top: 0.5px solid rgba(0,0,0,0.05); }
-        .toggle-switch { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eef2f5; }
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
-        input:checked + .slider { background-color: #1c6e9f; }
-        input:checked + .slider:before { transform: translateX(24px); }
-        .preview-struk { background: #f5f7fc; border-radius: 20px; padding: 16px; margin-top: 12px; font-family: monospace; font-size: 0.7rem; white-space: pre-wrap; border: 1px dashed #dce3ec; }
-        .info-text { font-size: 0.7rem; color: #6c7e9e; margin-top: 8px; text-align: center; }
-        .row-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
-        .filter-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-        .date-range { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
-        .date-range input { flex: 1; padding: 12px 16px; border-radius: 28px; border: 1px solid #dce3ec; font-size: 0.85rem; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; border-radius: 32px; padding: 24px; max-width: 90%; width: 320px; text-align: center; }
-        .scan-result-box { background: #e8f5e9; padding: 12px; border-radius: 16px; margin-top: 12px; font-size: 0.85rem; word-break: break-all; }
-        .btn-small { background: #1c6e9f; color: white; border: none; border-radius: 20px; padding: 8px 16px; cursor: pointer; margin-top: 8px; }
+        .modal-content { background: white; border-radius: 32px; padding: 24px; max-width: 90%; width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .scan-result-box { background: #e8f5e9; padding: 12px; border-radius: 16px; margin-top: 12px; font-size: 0.85rem; word-break: break-all; border: 1px solid #c8e6c9; }
+        
+        /* Toggle Switch Styles - DIPERBAIKI */
+        .toggle-switch {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 16px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #1c6e9f;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
         @media (max-width: 480px) {
             .menu-grid { gap: 12px; padding: 6px 12px; }
             .icon-circle { width: 54px; height: 54px; font-size: 24px; }
@@ -118,8 +166,6 @@
     <div class="fab-kasir-container">
         <button id="bigKasirButton" class="btn-kasir-utama"><i class="fas fa-cash-register"></i> <span>Buka Kasir Cepat</span> <i class="fas fa-arrow-right"></i></button>
     </div>
-    <div class="bottom-spacer"></div>
-    <div class="footer-note"><i class="fas fa-mobile-alt"></i> Optimasi Android · Sentuh menu untuk aksi</div>
 </div>
 
 <!-- HALAMAN KASIR -->
@@ -127,12 +173,13 @@
     <button class="back-btn back-to-menu"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
     <div class="scanner-card">
         <div class="section-title"><i class="fas fa-qrcode"></i> Scan QR Produk</div>
-        <div class="qr-reader-wrapper"><div id="qr-reader-kasir"></div></div>
+        <div id="qr-reader-kasir" class="qr-reader-wrapper" style="background:#000; min-height:200px;"></div>
         <div class="scan-controls">
             <button id="start-scan-kasir" class="btn-scan btn-scan-primary"><i class="fas fa-camera"></i> Mulai Kamera</button>
-            <button id="stop-scan-kasir" class="btn-scan"><i class="fas fa-stop"></i> Stop Kamera</button>
+            <button id="stop-scan-kasir" class="btn-scan" disabled><i class="fas fa-stop"></i> Stop Kamera</button>
         </div>
         <div id="kasir-scan-result" style="display: none;" class="scan-result-box"></div>
+        <div style="font-size:11px; color:#888; text-align:center; margin-top:5px;"><i class="fas fa-info-circle"></i> Kamera akan mati otomatis setelah scan berhasil.</div>
     </div>
     <div class="product-search-card">
         <div class="section-title"><i class="fas fa-search"></i> Cari Barang</div>
@@ -141,7 +188,7 @@
     </div>
     <div class="cart-card">
         <div class="section-title"><i class="fas fa-shopping-cart"></i> Keranjang <span id="cart-count">(0)</span>
-            <button id="clear-cart-btn" class="reset-btn"><i class="fas fa-trash-alt"></i> Kosongkan</button>
+            <button id="clear-cart-btn" style="background:none; border:none; color:#d32f2f; font-size:0.75rem; margin-left:auto; cursor:pointer;"><i class="fas fa-trash-alt"></i> Kosongkan</button>
         </div>
         <div id="cart-items-container" class="cart-items"><div class="empty-list">🛒 Keranjang kosong</div></div>
         <div class="cart-total"><span>Total:</span><span id="cart-total-amount">Rp 0</span></div>
@@ -153,19 +200,17 @@
 <div id="tambahStokPage" class="tambahstok-page">
     <button class="back-btn back-to-menu"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
     
-    <!-- Scanner QR untuk Stok -->
     <div class="scanner-card">
         <div class="section-title"><i class="fas fa-qrcode"></i> Scan QR untuk Tambah/Edit Stok</div>
-        <div class="qr-reader-wrapper"><div id="qr-reader-stok"></div></div>
+        <div id="qr-reader-stok" class="qr-reader-wrapper" style="background:#000; min-height:200px;"></div>
         <div class="scan-controls">
             <button id="start-scan-stok" class="btn-scan btn-scan-primary"><i class="fas fa-camera"></i> Mulai Kamera</button>
-            <button id="stop-scan-stok" class="btn-scan"><i class="fas fa-stop"></i> Stop Kamera</button>
+            <button id="stop-scan-stok" class="btn-scan" disabled><i class="fas fa-stop"></i> Stop Kamera</button>
         </div>
         <div id="stok-scan-result" style="display: none;" class="scan-result-box"></div>
-        <div class="info-text"><i class="fas fa-info-circle"></i> Scan QR code produk untuk mengisi form secara otomatis</div>
+        <div style="font-size:11px; color:#888; text-align:center; margin-top:5px;"><i class="fas fa-info-circle"></i> Scan otomatis isi form & mati kamera.</div>
     </div>
     
-    <!-- Form Stok Produk -->
     <div class="settings-card">
         <div class="section-title"><i class="fas fa-edit"></i> Form Stok Produk</div>
         <div class="input-group">
@@ -198,7 +243,7 @@
         </div>
         <button id="saveProductBtn" class="btn-add-stok"><i class="fas fa-save"></i> Simpan / Update Stok</button>
         
-        <hr style="margin: 20px 0;">
+        <hr style="margin: 20px 0; border:0; border-top:1px dashed #ddd;">
         
         <div class="section-title"><i class="fas fa-list"></i> Daftar Stok Produk</div>
         <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-produk" placeholder="Cari nama atau kode..."></div>
@@ -211,14 +256,18 @@
     <button class="back-btn back-to-menu"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
     <div class="filter-card">
         <div class="section-title"><i class="fas fa-filter"></i> Filter Laporan</div>
-        <div class="filter-buttons">
+        <div class="filter-buttons" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
             <button class="btn-filter active" data-filter="hari">Hari Ini</button>
             <button class="btn-filter" data-filter="minggu">Minggu Ini</button>
             <button class="btn-filter" data-filter="bulan">Bulan Ini</button>
             <button class="btn-filter" data-filter="tahun">Tahun Ini</button>
             <button class="btn-filter" data-filter="semua">Semua</button>
         </div>
-        <div class="date-range"><input type="date" id="startDate"><input type="date" id="endDate"><button id="applyDateBtn" class="btn-filter" style="background:#1c6e9f; color:white;">Terapkan</button></div>
+        <div class="date-range" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <input type="date" id="startDate" style="padding:10px; border-radius:20px; border:1px solid #ddd; flex:1;">
+            <input type="date" id="endDate" style="padding:10px; border-radius:20px; border:1px solid #ddd; flex:1;">
+            <button id="applyDateBtn" class="btn-filter" style="background:#1c6e9f; color:white;">Terapkan</button>
+        </div>
         <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchTransaction" placeholder="Cari transaksi..."></div>
     </div>
     <div class="stats-card">
@@ -257,20 +306,40 @@
 <!-- HALAMAN SEKURITI -->
 <div id="sekuritiPage" class="sekuriti-page">
     <button class="back-btn back-to-menu"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
-    <div class="settings-card"><div class="section-title"><i class="fas fa-history"></i> Log Aktivitas</div><div id="logList" class="log-list"><div class="empty-list">📋 Belum ada log aktivitas</div></div><button id="clearLogsBtn" class="btn-danger" style="margin-top:12px;"><i class="fas fa-trash"></i> Hapus Semua Log</button></div>
+    <div class="settings-card"><div class="section-title"><i class="fas fa-history"></i> Log Aktivitas</div><div id="logList" class="log-list"><div class="empty-list">📋 Belum ada log aktivitas</div></div><button id="clearLogsBtn" class="btn-danger" style="margin-top:12px; width:100%; border-radius:20px; border:none; padding:10px;"><i class="fas fa-trash"></i> Hapus Semua Log</button></div>
 </div>
 
 <!-- HALAMAN PENGATURAN -->
 <div id="pengaturanPage" class="pengaturan-page">
     <button class="back-btn back-to-menu"><i class="fas fa-arrow-left"></i> Kembali ke Menu</button>
     <div class="settings-card"><div class="section-title"><i class="fas fa-store"></i> Profil Toko</div><div class="input-group"><label>Nama Toko</label><input type="text" id="store-name" value="KasirPlus Pro Shop"></div><div class="input-group"><label>Alamat</label><input type="text" id="store-address"></div><div class="input-group"><label>Telepon</label><input type="text" id="store-phone"></div><button id="saveProfileBtn" class="btn-save"><i class="fas fa-save"></i> Simpan Profil</button></div>
-    <div class="settings-card"><div class="section-title"><i class="fas fa-receipt"></i> Pengaturan Struk</div><div class="input-group"><label>Header Baris 1</label><input type="text" id="receipt-header1" value="=== KASIRPLUS PRO ==="></div><div class="input-group"><label>Header Baris 2</label><input type="text" id="receipt-header2" value="Terima Kasih"></div><div class="input-group"><label>Footer Struk</label><input type="text" id="receipt-footer" value="Layanan: 08123456789"></div><div class="preview-struk" id="receipt-preview">Preview struk</div><button id="saveReceiptBtn" class="btn-save"><i class="fas fa-save"></i> Simpan Struk</button></div>
-    <div class="settings-card"><div class="section-title"><i class="fas fa-shield-alt"></i> Keamanan</div><div class="toggle-switch"><div><div class="toggle-label">PIN Keamanan</div></div><label class="switch"><input type="checkbox" id="pin-enabled"><span class="slider"></span></label></div><div class="input-group" id="pin-input-group" style="display:none;"><label>PIN (4-6 digit)</label><input type="password" id="pin-code" maxlength="6"></div><button id="saveSecurityBtn" class="btn-save"><i class="fas fa-save"></i> Simpan Keamanan</button></div>
-    <div class="settings-card"><div class="section-title"><i class="fas fa-database"></i> Backup & Reset</div><div class="row-buttons"><button id="backupDataBtn" class="btn-secondary" style="background:#eef2fa; padding:12px 20px; border-radius:60px;"><i class="fas fa-download"></i> Backup JSON</button><label class="btn-secondary" style="background:#eef2fa; padding:12px 20px; border-radius:60px; cursor:pointer;"><i class="fas fa-upload"></i> Restore JSON<input type="file" id="restoreFileInput" accept=".json" style="display:none;"></label></div><div class="row-buttons"><button id="resetDataBtn" class="btn-secondary" style="background:#d32f2f; color:white; padding:12px 20px; border-radius:60px;"><i class="fas fa-trash-alt"></i> Reset Semua Data</button></div></div>
+    
+    <div class="settings-card"><div class="section-title"><i class="fas fa-receipt"></i> Pengaturan Struk</div><div class="input-group"><label>Header Baris 1</label><input type="text" id="receipt-header1" value="=== KASIRPLUS PRO ==="></div><div class="input-group"><label>Header Baris 2</label><input type="text" id="receipt-header2" value="Terima Kasih"></div><div class="input-group"><label>Footer Struk</label><input type="text" id="receipt-footer" value="Layanan: 08123456789"></div><div class="preview-struk" id="receipt-preview" style="background:#f5f7fc; padding:12px; border-radius:12px; border:1px dashed #ccc; font-family:monospace; font-size:11px; white-space:pre-wrap;">Preview struk</div><button id="saveReceiptBtn" class="btn-save"><i class="fas fa-save"></i> Simpan Struk</button></div>
+    
+    <div class="settings-card"><div class="section-title"><i class="fas fa-shield-alt"></i> Keamanan</div>
+        <div class="toggle-switch">
+            <span>PIN Keamanan</span>
+            <label class="switch">
+                <input type="checkbox" id="pin-enabled">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="input-group" id="pin-input-group" style="display:none;">
+            <label>PIN (4-6 digit)</label>
+            <div style="position:relative;">
+                <input type="password" id="pin-code" maxlength="6" style="padding-right:45px;">
+                <i class="fas fa-eye" id="togglePinVisibility" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer; color:#888;"></i>
+            </div>
+            <small style="color:#888;">🔒 PIN akan dienkripsi sederhana</small>
+        </div>
+        <button id="saveSecurityBtn" class="btn-save"><i class="fas fa-save"></i> Simpan Keamanan</button>
+    </div>
+    
+    <div class="settings-card"><div class="section-title"><i class="fas fa-database"></i> Backup & Reset</div><div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:10px;"><button id="backupDataBtn" style="background:#eef2fa; color:#1f4973; padding:12px 20px; border-radius:60px; border:none; flex:1;"><i class="fas fa-download"></i> Backup JSON</button><label style="background:#eef2fa; color:#1f4973; padding:12px 20px; border-radius:60px; cursor:pointer; border:none; flex:1; text-align:center;"><i class="fas fa-upload"></i> Restore JSON<input type="file" id="restoreFileInput" accept=".json" style="display:none;"></label></div><div style="margin-top:10px;"><button id="resetDataBtn" style="background:#d32f2f; color:white; padding:12px 20px; border-radius:60px; border:none; width:100%;"><i class="fas fa-trash-alt"></i> Reset Semua Data</button></div></div>
 </div>
 
 <div id="toastMsg" class="toast-msg">✔️ Notifikasi</div>
-<div id="pinModal" class="modal"><div class="modal-content"><h3>🔐 Verifikasi PIN</h3><input type="password" id="pinInput" placeholder="Masukkan PIN" style="width:100%; padding:12px; margin:12px 0; border-radius:12px; border:1px solid #ddd;"><button id="verifyPinBtn" style="padding:10px 20px; background:#1c6e9f; color:white; border:none; border-radius:12px;">Verifikasi</button></div></div>
+<div id="pinModal" class="modal"><div class="modal-content"><h3>🔐 Verifikasi PIN</h3><input type="password" id="pinInput" placeholder="Masukkan PIN" style="width:100%; padding:12px; margin:12px 0; border-radius:12px; border:1px solid #ddd; box-sizing:border-box;"><button id="verifyPinBtn" style="padding:10px 20px; background:#1c6e9f; color:white; border:none; border-radius:12px; width:100%;">Verifikasi</button></div></div>
 
 <script>
     // ==================== GLOBAL VARIABLES ====================
@@ -287,7 +356,6 @@
     let expenses = [];
     let activityLogs = [];
     
-    // Scanner instances
     let kasirScanner = null;
     let stokScanner = null;
     let isKasirScanning = false;
@@ -297,7 +365,6 @@
     const mainMenuPage = document.getElementById('mainMenuPage');
     const pages = ['kasirPage', 'tambahStokPage', 'laporanPage', 'pengaturanPage', 'riwayatPage', 'pengeluaranPage', 'cetakresiPage', 'sekuritiPage'];
     
-    // ==================== UTILITY ====================
     function showToast(message, isError = false) {
         toastMsgDiv.innerText = message;
         toastMsgDiv.classList.add('show');
@@ -401,7 +468,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <div class="produk-nama"><strong>${escapeHtml(prod.name)}</strong></div>
-                        <div class="produk-kode"><i class="fas fa-qrcode"></i> ${escapeHtml(prod.code)}</div>
+                        <div class="produk-kode" style="font-size:0.75rem; color:#888;"><i class="fas fa-qrcode"></i> ${escapeHtml(prod.code)}</div>
                     </div>
                     <div>
                         <span class="stok-badge"><i class="fas fa-cubes"></i> Stok: ${prod.stock}</span>
@@ -413,9 +480,9 @@
                     <div><span class="detail-label">Harga Jual</span><br><span class="detail-value">Rp ${formatRupiah(prod.sellPrice)}</span></div>
                     <div><span class="detail-label">Margin/Unit</span><br><span class="detail-value">${profit >= 0 ? '+' : ''}Rp ${formatRupiah(Math.abs(profit))}</span></div>
                 </div>
-                <div>
-                    <button onclick="editProduct(${prod.id})" style="background:#eef2fa; border:none; border-radius:20px; padding:6px 12px; margin-right:8px;"><i class="fas fa-pen"></i> Edit</button>
-                    <button onclick="quickAddStock(${prod.id})" style="background:#e8f0fe; border:none; border-radius:20px; padding:6px 12px;"><i class="fas fa-plus-circle"></i> Tambah Stok</button>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button onclick="editProduct(${prod.id})" style="background:#eef2fa; border:none; border-radius:20px; padding:6px 12px; font-size:0.8rem; color:#1c6e9f; flex:1;"><i class="fas fa-pen"></i> Edit</button>
+                    <button onclick="quickAddStock(${prod.id})" style="background:#e8f0fe; border:none; border-radius:20px; padding:6px 12px; font-size:0.8rem; color:#1565c0; flex:1;"><i class="fas fa-plus-circle"></i> +Stok</button>
                 </div>
             </div>`;
         });
@@ -509,7 +576,7 @@
                     <p>${item.qty} x Rp ${formatRupiah(item.price)}</p>
                 </div>
                 <div>
-                    <span class="cart-item-price">Rp ${formatRupiah(item.price * item.qty)}</span>
+                    <span class="cart-item-price" style="font-weight:bold;">Rp ${formatRupiah(item.price * item.qty)}</span>
                     <button class="remove-item-btn" data-id="${item.id}"><i class="fas fa-times-circle"></i></button>
                 </div>
             </div>`;
@@ -541,11 +608,11 @@
             html += `<div class="product-item-search" data-id="${prod.id}">
                 <div>
                     <h4>${escapeHtml(prod.name)}</h4>
-                    <p><i class="fas fa-barcode"></i> ${escapeHtml(prod.code)}</p>
+                    <p style="font-size:0.75rem; color:#888;"><i class="fas fa-barcode"></i> ${escapeHtml(prod.code)}</p>
                 </div>
                 <div style="text-align:right;">
-                    <div class="product-price">Rp ${formatRupiah(prod.sellPrice)}</div>
-                    <div class="stok-info">Stok: ${prod.stock}</div>
+                    <div class="product-price" style="font-weight:bold; color:#1c6e9f;">Rp ${formatRupiah(prod.sellPrice)}</div>
+                    <div class="stok-info" style="font-size:0.7rem;">Stok: ${prod.stock}</div>
                 </div>
             </div>`;
         });
@@ -568,7 +635,10 @@
         const existing = products.find(p => p.code.toLowerCase() === decodedText.toLowerCase());
         if(existing) {
             let qty = prompt(`${existing.name}\nHarga: Rp ${formatRupiah(existing.sellPrice)}\nStok: ${existing.stock}\nJumlah:`, "1");
-            if(qty && parseInt(qty) > 0) addToCart(existing, parseInt(qty));
+            if(qty && parseInt(qty) > 0) {
+                addToCart(existing, parseInt(qty));
+                stopAllScanners();
+            }
         } else { showToast(`❌ Kode ${decodedText} tidak ditemukan`, true); }
     }
     
@@ -591,6 +661,60 @@
             showToast(`🆕 Kode baru, silakan isi data produk`);
             document.getElementById('stok-name').focus();
         }
+        stopAllScanners();
+    }
+
+    async function stopAllScanners() {
+        if(kasirScanner && isKasirScanning) {
+            try { await kasirScanner.stop(); } catch(e) { console.warn(e); }
+            isKasirScanning = false;
+            const startBtn = document.getElementById('start-scan-kasir');
+            const stopBtn = document.getElementById('stop-scan-kasir');
+            if(startBtn) startBtn.disabled = false;
+            if(stopBtn) stopBtn.disabled = true;
+        }
+        if(stokScanner && isStokScanning) {
+            try { await stokScanner.stop(); } catch(e) { console.warn(e); }
+            isStokScanning = false;
+            const startBtn = document.getElementById('start-scan-stok');
+            const stopBtn = document.getElementById('stop-scan-stok');
+            if(startBtn) startBtn.disabled = false;
+            if(stopBtn) stopBtn.disabled = true;
+        }
+    }
+    
+    async function startKasirScanner() {
+        await stopAllScanners();
+        const readerDiv = document.getElementById('qr-reader-kasir');
+        if(!readerDiv) return;
+        readerDiv.innerHTML = '';
+        try {
+            kasirScanner = new Html5Qrcode("qr-reader-kasir");
+            await kasirScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, (text) => processKasirQR(text), () => {});
+            isKasirScanning = true;
+            const startBtn = document.getElementById('start-scan-kasir');
+            const stopBtn = document.getElementById('stop-scan-kasir');
+            if(startBtn) startBtn.disabled = true;
+            if(stopBtn) stopBtn.disabled = false;
+            showToast("📸 Kamera kasir aktif");
+        } catch(e) { showToast("❌ Gagal akses kamera", true); console.error(e); }
+    }
+    
+    async function startStokScanner() {
+        await stopAllScanners();
+        const readerDiv = document.getElementById('qr-reader-stok');
+        if(!readerDiv) return;
+        readerDiv.innerHTML = '';
+        try {
+            stokScanner = new Html5Qrcode("qr-reader-stok");
+            await stokScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, (text) => processStokQR(text), () => {});
+            isStokScanning = true;
+            const startBtn = document.getElementById('start-scan-stok');
+            const stopBtn = document.getElementById('stop-scan-stok');
+            if(startBtn) startBtn.disabled = true;
+            if(stopBtn) stopBtn.disabled = false;
+            showToast("📸 Kamera stok aktif");
+        } catch(e) { showToast("❌ Gagal akses kamera", true); console.error(e); }
     }
 
     // ==================== LAPORAN & TRANSAKSI ====================
@@ -695,7 +819,7 @@
         if(!container) return;
         if(topProductsList.length === 0) { container.innerHTML = '<div class="empty-list">📊 Belum ada data</div>'; return; }
         let html = '';
-        topProductsList.forEach((p, idx) => { html += `<div class="top-product-item" style="display:flex; justify-content:space-between; padding:10px 0;"><div class="rank">${idx+1}</div><div class="product-name">${escapeHtml(p.name)}</div><div class="product-sold">${p.qty} terjual</div><div class="product-revenue">Rp ${formatRupiah(p.revenue)}</div></div>`; });
+        topProductsList.forEach((p, idx) => { html += `<div class="top-product-item" style="display:flex; justify-content:space-between; padding:10px 0;"><div style="font-weight:bold; color:#1c6e9f; width:30px;">#${idx+1}</div><div style="flex:1;">${escapeHtml(p.name)}</div><div style="font-weight:bold; color:#e9792c;">${p.qty} sold</div><div style="font-weight:bold; color:#1f8a4c;">Rp ${formatRupiah(p.revenue)}</div></div>`; });
         container.innerHTML = html;
     }
     
@@ -709,12 +833,12 @@
         displayData.forEach(t => {
             html += `<div class="transaction-item">
                 <div style="display:flex; justify-content:space-between;">
-                    <span class="transaction-id"><i class="fas fa-receipt"></i> ${escapeHtml(t.id)}</span>
-                    <span class="transaction-date">${formatDate(t.date)}</span>
+                    <span class="transaction-id" style="font-weight:bold; color:#1c6e9f;"><i class="fas fa-receipt"></i> ${escapeHtml(t.id)}</span>
+                    <span class="transaction-date" style="font-size:0.75rem; color:#888;">${formatDate(t.date)}</span>
                 </div>
-                <div class="transaction-items">${t.items.map(i => `${i.name} ${i.qty}x`).join(', ')}</div>
-                <div class="transaction-total">Total: Rp ${formatRupiah(t.total)}</div>
-                <button onclick="printReceipt('${t.id}')" style="margin-top:8px; background:#1c6e9f; color:white; border:none; border-radius:20px; padding:6px 12px;"><i class="fas fa-print"></i> Cetak Ulang</button>
+                <div class="transaction-items" style="font-size:0.85rem; margin:4px 0;">${t.items.map(i => `${i.name} ${i.qty}x`).join(', ')}</div>
+                <div class="transaction-total" style="font-weight:bold;">Total: Rp ${formatRupiah(t.total)}</div>
+                <button onclick="printReceipt('${t.id}')" style="margin-top:8px; background:#1c6e9f; color:white; border:none; border-radius:20px; padding:6px 12px; width:100%;"><i class="fas fa-print"></i> Cetak Ulang</button>
             </div>`;
         });
         container.innerHTML = html;
@@ -730,11 +854,11 @@
         displayData.forEach(t => {
             html += `<div class="transaction-item">
                 <div style="display:flex; justify-content:space-between;">
-                    <span><i class="fas fa-receipt"></i> ${escapeHtml(t.id)}</span>
-                    <span>${formatDate(t.date)}</span>
+                    <span style="font-weight:bold; color:#1c6e9f;"><i class="fas fa-receipt"></i> ${escapeHtml(t.id)}</span>
+                    <span style="font-size:0.75rem; color:#888;">${formatDate(t.date)}</span>
                 </div>
-                <div>Total: Rp ${formatRupiah(t.total)}</div>
-                <button onclick="printReceipt('${t.id}')" style="margin-top:8px; background:#1c6e9f; color:white; border:none; border-radius:20px; padding:6px 12px;"><i class="fas fa-print"></i> Cetak Resi</button>
+                <div style="font-weight:bold;">Total: Rp ${formatRupiah(t.total)}</div>
+                <button onclick="printReceipt('${t.id}')" style="margin-top:8px; background:#1c6e9f; color:white; border:none; border-radius:20px; padding:6px 12px; width:100%;"><i class="fas fa-print"></i> Cetak Resi</button>
             </div>`;
         });
         container.innerHTML = html;
@@ -749,9 +873,9 @@
             const header1 = localStorage.getItem('receipt_header1') || '=== KASIRPLUS PRO ===';
             const header2 = localStorage.getItem('receipt_header2') || 'Terima Kasih';
             const footer = localStorage.getItem('receipt_footer') || 'Layanan: 08123456789';
-            const receipt = `${header1}\n${header2}\n${'='.repeat(30)}\n${storeName}\n${address}\nTelp: ${phone}\n${'='.repeat(30)}\n${transaction.items.map(i => `${i.name}\n${i.qty}x @${formatRupiah(i.price)} = Rp ${formatRupiah(i.price * i.qty)}`).join('\n')}\n${'='.repeat(30)}\nTOTAL: Rp ${formatRupiah(transaction.total)}\n${footer}\n${new Date(transaction.date).toLocaleString()}\n${'='.repeat(30)}\nTerima Kasih!`;
+            const receipt = `${header1}\n${header2}\n${'='.repeat(30)}\n${storeName}\n${address}\nTelp: ${phone}\n${'='.repeat(30)}\nID: ${transaction.id}\nDate: ${formatDate(transaction.date)}\n${'='.repeat(30)}\n${transaction.items.map(i => `${i.name}\n${i.qty}x @${formatRupiah(i.price)} = Rp ${formatRupiah(i.price * i.qty)}`).join('\n')}\n${'='.repeat(30)}\nTOTAL: Rp ${formatRupiah(transaction.total)}\n${footer}\n${'='.repeat(30)}\nTerima Kasih!`;
             const printWindow = window.open('', '_blank');
-            printWindow.document.write(`<html><head><title>Cetak Resi - ${transaction.id}</title><style>body { font-family: monospace; padding: 20px; } pre { font-size: 12px; }</style></head><body><pre>${receipt}</pre><script>window.print();window.close();<\/script></body></html>`);
+            printWindow.document.write(`<html><head><title>Cetak Resi - ${transaction.id}</title><style>body { font-family: monospace; padding: 20px; font-size: 12px; } pre { font-size: 12px; }</style></head><body><pre>${receipt}</pre><script>window.print();window.close();<\/script></body></html>`);
             addLog('print', `Cetak resi ${transaction.id}`);
         }
     };
@@ -764,61 +888,7 @@
         const labels = Object.keys(salesByDate).slice(-7);
         const data = labels.map(l => salesByDate[l]);
         if(salesChart) salesChart.destroy();
-        salesChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Penjualan (Rp)', data, borderColor: '#1c6e9f', backgroundColor: 'rgba(28,110,159,0.1)', borderWidth: 2, fill: true }] }, options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, ticks: { callback: (v) => `Rp ${formatRupiah(v)}` } } } } });
-    }
-
-    // ==================== QR SCANNER ====================
-    async function stopAllScanners() {
-        if(kasirScanner && isKasirScanning) {
-            try { await kasirScanner.stop(); } catch(e) { console.warn(e); }
-            isKasirScanning = false;
-            const startBtn = document.getElementById('start-scan-kasir');
-            const stopBtn = document.getElementById('stop-scan-kasir');
-            if(startBtn) startBtn.disabled = false;
-            if(stopBtn) stopBtn.disabled = true;
-        }
-        if(stokScanner && isStokScanning) {
-            try { await stokScanner.stop(); } catch(e) { console.warn(e); }
-            isStokScanning = false;
-            const startBtn = document.getElementById('start-scan-stok');
-            const stopBtn = document.getElementById('stop-scan-stok');
-            if(startBtn) startBtn.disabled = false;
-            if(stopBtn) stopBtn.disabled = true;
-        }
-    }
-    
-    async function startKasirScanner() {
-        await stopAllScanners();
-        const readerDiv = document.getElementById('qr-reader-kasir');
-        if(!readerDiv) return;
-        readerDiv.innerHTML = '';
-        kasirScanner = new Html5Qrcode("qr-reader-kasir");
-        try {
-            await kasirScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, (text) => processKasirQR(text), () => {});
-            isKasirScanning = true;
-            const startBtn = document.getElementById('start-scan-kasir');
-            const stopBtn = document.getElementById('stop-scan-kasir');
-            if(startBtn) startBtn.disabled = true;
-            if(stopBtn) stopBtn.disabled = false;
-            showToast("📸 Kamera kasir aktif");
-        } catch(e) { showToast("❌ Gagal akses kamera", true); }
-    }
-    
-    async function startStokScanner() {
-        await stopAllScanners();
-        const readerDiv = document.getElementById('qr-reader-stok');
-        if(!readerDiv) return;
-        readerDiv.innerHTML = '';
-        stokScanner = new Html5Qrcode("qr-reader-stok");
-        try {
-            await stokScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } }, (text) => processStokQR(text), () => {});
-            isStokScanning = true;
-            const startBtn = document.getElementById('start-scan-stok');
-            const stopBtn = document.getElementById('stop-scan-stok');
-            if(startBtn) startBtn.disabled = true;
-            if(stopBtn) stopBtn.disabled = false;
-            showToast("📸 Kamera stok aktif");
-        } catch(e) { showToast("❌ Gagal akses kamera", true); }
+        salesChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Penjualan (Rp)', data, borderColor: '#1c6e9f', backgroundColor: 'rgba(28,110,159,0.1)', borderWidth: 2, fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, ticks: { callback: (v) => `Rp ${formatRupiah(v)}` } } }, plugins: { legend: { display: false } } } });
     }
 
     // ==================== PENGELUARAN ====================
@@ -838,11 +908,11 @@
         expenses.forEach(e => {
             html += `<div class="expense-item">
                 <div style="display:flex; justify-content:space-between;">
-                    <span><strong>${escapeHtml(e.description)}</strong></span>
-                    <span>Rp ${formatRupiah(e.amount)}</span>
+                    <span style="font-weight:bold;">${escapeHtml(e.description)}</span>
+                    <span style="color:#d32f2f; font-weight:bold;">-Rp ${formatRupiah(e.amount)}</span>
                 </div>
                 <div style="font-size:0.7rem; color:#888;">${formatDate(e.date)}</div>
-                <button onclick="deleteExpense(${e.id})" style="margin-top:8px; background:#ffebee; border:none; border-radius:20px; padding:4px 12px; color:#d32f2f;"><i class="fas fa-trash"></i> Hapus</button>
+                <button onclick="deleteExpense(${e.id})" style="margin-top:8px; background:#ffebee; border:none; border-radius:20px; padding:4px 12px; color:#d32f2f; width:100%;"><i class="fas fa-trash"></i> Hapus</button>
             </div>`;
         });
         container.innerHTML = html;
@@ -881,11 +951,15 @@
         if(filtered.length === 0) { container.innerHTML = '<div class="empty-list">📜 Belum ada riwayat</div>'; return; }
         let html = '';
         filtered.forEach(h => {
-            const changeClass = h.change > 0 ? 'color:#2e7d32;' : 'color:#d32f2f;';
-            html += `<div class="history-item">
-                <div><strong>${escapeHtml(h.productName)}</strong></div>
-                <div style="font-size:0.75rem;">${formatDate(h.date)}</div>
-                <div>Stok: ${h.oldStock} → ${h.newStock} <span style="${changeClass}">(${h.change > 0 ? '+' : ''}${h.change})</span></div>
+            const color = h.change > 0 ? '#2e7d32' : '#d32f2f';
+            const icon = h.change > 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+            html += `<div class="history-item" style="border-bottom:1px solid #eee; padding:10px 0;">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${escapeHtml(h.productName)}</strong>
+                    <i class="fas ${icon}" style="color:${color}; font-size:0.8rem;"></i>
+                </div>
+                <div style="font-size:0.7rem; color:#888;">${formatDate(h.date)}</div>
+                <div style="font-size:0.8rem; margin-top:4px;">Stok: ${h.oldStock} <i class="fas fa-arrow-right" style="font-size:0.6rem;"></i> ${h.newStock} <span style="color:${color}; font-weight:bold;">(${h.change > 0 ? '+' : ''}${h.change})</span></div>
             </div>`;
         });
         container.innerHTML = html;
@@ -905,10 +979,10 @@
         let html = '';
         activityLogs.slice(0, 50).forEach(log => {
             const icon = log.type === 'transaction' ? '💰' : log.type === 'stock' ? '📦' : log.type === 'expense' ? '💸' : '📝';
-            html += `<div class="log-item">
+            html += `<div class="log-item" style="font-size:0.8rem; border-bottom:1px dashed #eee; padding:8px 0;">
                 <div style="display:flex; justify-content:space-between;">
                     <span>${icon} ${escapeHtml(log.message)}</span>
-                    <span style="font-size:0.7rem; color:#888;">${formatDate(log.date)}</span>
+                    <span style="font-size:0.7rem; color:#aaa;">${formatDate(log.date).split(',')[0]}</span>
                 </div>
             </div>`;
         });
@@ -933,6 +1007,7 @@
         document.getElementById('receipt-footer').value = localStorage.getItem('receipt_footer') || 'Layanan: 08123456789';
         document.getElementById('pin-enabled').checked = localStorage.getItem('pin_enabled') === 'true';
         document.getElementById('pin-input-group').style.display = document.getElementById('pin-enabled').checked ? 'block' : 'none';
+        if(localStorage.getItem('pin_code_hash')) document.getElementById('pin-code').value = '';
         updateReceiptPreview();
         document.getElementById('displayStoreName').innerText = localStorage.getItem('store_name') || 'KasirPlus Pro';
     }
@@ -1037,7 +1112,6 @@
         btn.addEventListener('click', () => showPage('mainMenuPage'));
     });
     
-    // Scanner buttons
     document.getElementById('start-scan-kasir')?.addEventListener('click', startKasirScanner);
     document.getElementById('stop-scan-kasir')?.addEventListener('click', () => stopAllScanners());
     document.getElementById('start-scan-stok')?.addEventListener('click', startStokScanner);
@@ -1097,7 +1171,7 @@
         if(document.getElementById('pin-enabled').checked) { 
             const pin = document.getElementById('pin-code').value; 
             if(pin.length >= 4) localStorage.setItem('pin_code_hash', simpleHash(pin)); 
-            else showToast("❌ PIN minimal 4 digit", true);
+            else if(pin.length > 0 && pin.length < 4) { showToast("❌ PIN minimal 4 digit", true); return; }
         } else { localStorage.removeItem('pin_code_hash'); }
         showToast('✅ Keamanan disimpan'); 
         addLog('setting', 'Pengaturan keamanan diperbarui');
@@ -1110,6 +1184,19 @@
     document.getElementById('clearLogsBtn')?.addEventListener('click', clearLogs);
     document.getElementById('searchHistory')?.addEventListener('input', () => renderHistory());
     document.getElementById('searchReceipt')?.addEventListener('input', () => updateReceiptList());
+    
+    document.getElementById('togglePinVisibility')?.addEventListener('click', function() {
+        const pinInput = document.getElementById('pin-code');
+        if(pinInput.type === 'password') {
+            pinInput.type = 'text';
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        } else {
+            pinInput.type = 'password';
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        }
+    });
     
     document.querySelectorAll('.btn-filter[data-filter]').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1137,7 +1224,6 @@
     function updateClock() { const clockSpan = document.getElementById('clockTime'); if(clockSpan) { let now = new Date(); clockSpan.innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`; } }
     setCurrentDate(); updateClock(); setInterval(updateClock, 60000);
     
-    // Initial Load
     loadProducts(); loadTransactions(); loadSettings(); loadExpenses(); loadStockHistory(); loadLogs(); updateProfitMargin();
     renderCart();
     
