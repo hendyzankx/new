@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>KasirPro - Sistem Kasir Lengkap</title>
+    <title>KasirPro - Stok Scan Ready</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- HTML5 QR Code -->
@@ -114,7 +114,8 @@
         }
 
         /* --- QR Wrapper --- */
-        #qr-reader, #qr-reader-stok { width: 100%; border-radius: 16px; overflow: hidden; }
+        #stokScannerContainer { width: 100%; border-radius: 16px; overflow: hidden; }
+        #qr-reader { width: 100%; border-radius: 16px; overflow: hidden; }
 
         /* --- Utility --- */
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -149,7 +150,7 @@
 
         <div class="menu-grid">
             <div class="menu-card" onclick="nav.to('kasir')"><div class="icon-circle"><i class="fas fa-cash-register"></i></div><div class="menu-title">Kasir</div><div class="menu-desc">Transaksi & Scan</div></div>
-            <div class="menu-card" onclick="nav.to('stok')"><div class="icon-circle"><i class="fas fa-boxes"></i></div><div class="menu-title">Stok</div><div class="menu-desc">Inventory Produk</div></div>
+            <div class="menu-card" onclick="nav.to('stok')"><div class="icon-circle"><i class="fas fa-boxes"></i></div><div class="menu-title">Stok</div><div class="menu-desc">Inventory & Scan</div></div>
             <div class="menu-card" onclick="nav.to('laporan')"><div class="icon-circle"><i class="fas fa-chart-pie"></i></div><div class="menu-title">Laporan</div><div class="menu-desc">Analisa Penjualan</div></div>
             <div class="menu-card" onclick="nav.to('pengeluaran')"><div class="icon-circle"><i class="fas fa-money-bill-wave"></i></div><div class="menu-title">Pengeluaran</div><div class="menu-desc">Biaya Operasional</div></div>
             <div class="menu-card" onclick="nav.to('riwayat')"><div class="icon-circle"><i class="fas fa-history"></i></div><div class="menu-title">Riwayat</div><div class="menu-desc">Log Stok & Aksi</div></div>
@@ -167,7 +168,7 @@
     <div id="kasirPage" class="page">
         <button onclick="nav.home()" class="back-btn"><i class="fas fa-arrow-left"></i> Kembali</button>
         
-        <!-- Scanner -->
+        <!-- Scanner Kasir -->
         <div class="card">
             <div class="card-header" onclick="toggleCollapsible('scanSection')">
                 <div class="section-title"><i class="fas fa-qrcode"></i> Scan Produk</div>
@@ -204,35 +205,57 @@
         </div>
     </div>
 
-    <!-- 3. HALAMAN STOK (INVENTORY) -->
+    <!-- 3. HALAMAN STOK (DITAMBAHKAN SCANNER) -->
     <div id="stokPage" class="page">
         <button onclick="nav.home()" class="back-btn"><i class="fas fa-arrow-left"></i> Kembali</button>
         
+        <!-- CARD 1: KAMERA SCANNER KHUSUS STOK -->
+        <div class="card" style="border: 2px solid var(--primary);">
+            <div class="card-header" onclick="toggleCollapsible('stokScanSection')">
+                <div class="section-title" style="color:var(--primary);"><i class="fas fa-camera"></i> Scan Kamera Stok</div>
+                <i class="fas fa-chevron-down toggle-icon rotate" id="stokScanSectionIcon"></i>
+            </div>
+            <div id="stokScanSection" class="collapsible-content open">
+                <div style="background:black; border-radius:16px; overflow:hidden; min-height:250px; display:flex; align-items:center; justify-content:center; position:relative;">
+                    <div id="stokScannerContainer"></div>
+                    <div id="stokScanPlaceholder" style="position:absolute; color:#666; font-size:0.8rem; text-align:center;">Area Kamera</div>
+                </div>
+                <div class="row-2" style="margin-top:12px;">
+                    <button onclick="scanner.startStok()" class="btn btn-primary"><i class="fas fa-play"></i> Mulai Scan</button>
+                    <button onclick="scanner.stop()" class="btn btn-danger"><i class="fas fa-stop"></i> Stop</button>
+                </div>
+                <div id="stokScanFeedback" class="text-center" style="margin-top:10px; font-size:0.8rem; color:var(--success); display:none;">
+                    <i class="fas fa-check-circle"></i> Kode Terdeteksi!
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: FORM INPUT/EDIT -->
         <div class="card">
             <div class="card-header" onclick="toggleCollapsible('stokFormSection')">
-                <div class="section-title"><i class="fas fa-plus-circle"></i> Tambah/Edit Produk</div>
-                <i class="fas fa-chevron-down toggle-icon rotate" id="stokFormSectionIcon"></i>
+                <div class="section-title"><i class="fas fa-edit"></i> Input / Edit Data</div>
+                <i class="fas fa-chevron-down toggle-icon" id="stokFormSectionIcon"></i>
             </div>
-            <div id="stokFormSection" class="collapsible-content open">
+            <div id="stokFormSection" class="collapsible-content">
                 <div class="input-group">
-                    <label>Scan / Kode Produk</label>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="stokCode" placeholder="Kode...">
-                        <button onclick="scanner.startStok()" class="btn btn-secondary" style="width:auto;"><i class="fas fa-qrcode"></i></button>
-                    </div>
+                    <label>Kode Produk (Scan/Manual)</label>
+                    <input type="text" id="stokCode" placeholder="Cth: 8991001..." style="font-weight:bold; color:var(--primary);">
                 </div>
-                <div class="input-group"><label>Nama Produk</label><input type="text" id="stokName"></div>
+                <div class="input-group"><label>Nama Produk</label><input type="text" id="stokName" placeholder="Nama Barang"></div>
                 <div class="row-2">
                     <div class="input-group"><label>Harga Beli</label><input type="number" id="stokBuy" oninput="stok.calcMargin()"></div>
                     <div class="input-group"><label>Harga Jual</label><input type="number" id="stokSell" oninput="stok.calcMargin()"></div>
                 </div>
-                <div class="input-group"><label>Stok Awal/Tambahan</label><input type="number" id="stokQty"></div>
+                <div class="input-group"><label>Tambah / Kurangi Stok</label>
+                    <input type="number" id="stokQty" placeholder="Masukkan jumlah (misal: +10 atau -5)">
+                    <small style="color:var(--gray);">Isi positif untuk tambah, negatif untuk kurangi.</small>
+                </div>
                 <div style="font-size:0.8rem; margin-bottom:10px; color:var(--gray); text-align:right;" id="stokMarginInfo">Margin: Rp 0</div>
-                <button onclick="stok.save()" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Produk</button>
-                <div id="stokScanResult" style="margin-top:10px; display:none;" class="text-center"><span class="badge badge-in">Scan Terdeteksi</span></div>
+                <button onclick="stok.save()" class="btn btn-success"><i class="fas fa-save"></i> Simpan Perubahan</button>
             </div>
         </div>
 
+        <!-- LIST PRODUK -->
         <div class="card">
             <div class="input-group"><input type="text" placeholder="Cari stok..." oninput="stok.render(this.value)"></div>
             <div id="stokList" class="list-container"></div>
@@ -423,7 +446,6 @@
                 if(!localStorage.getItem('storeProfile')) {
                     db.set('storeProfile', { name: 'Toko Maju Jaya', address: 'Jl. Teknologi No. 1', phone: '08123456789' });
                 }
-                // Ensure arrays exist
                 ['products', 'transactions', 'expenses', 'logs', 'security'].forEach(k => {
                     if(!localStorage.getItem(k)) db.set(k, []);
                 });
@@ -455,7 +477,6 @@
                     $(pageId + 'Page').classList.add('active');
                     scanner.stop(); // Stop any running scanner
                     
-                    // Init page specific logic
                     if(pageId === 'stok') stok.render();
                     if(pageId === 'pengeluaran') expenses.render();
                     if(pageId === 'riwayat') logs.render();
@@ -471,35 +492,53 @@
             }
         };
 
-        // --- SCANNER MODULE ---
+        // --- SCANNER MODULE (UPDATED) ---
         const scanner = {
             html5QrcodeScanner: null,
-            mode: null, // 'kasir' or 'stok'
+            mode: null, 
             startKasir() {
                 this.start('kasir', 'qr-reader', (text) => kasir.addToCartByCode(text));
             },
             startStok() {
-                this.start('stok', 'qr-reader-stok', (text) => {
+                // Target ID yang baru: stokScannerContainer
+                this.start('stok', 'stokScannerContainer', (text) => {
+                    $('stokScanFeedback').style.display = 'block';
+                    $('stokScanPlaceholder').style.display = 'none';
+                    
+                    // Isi kode
                     $('stokCode').value = text;
+                    
+                    // Cek apakah produk ada
                     stok.fillByCode(text);
-                    $('stokScanResult').style.display = 'block';
-                    showToast('Kode ter-scan!');
-                    toggleCollapsible('stokFormSection', true); // Open form
+                    
+                    showToast('Scan Berhasil!');
+                    
+                    // Buka form input otomatis
+                    toggleCollapsible('stokFormSection', true);
+                    
+                    // Berhenti scan otomatis setelah dapat 1 kode untuk hemat baterai
+                    this.stop();
                 });
             },
             start(mode, elementId, callback) {
                 this.stop();
                 this.mode = mode;
+                // Inisialisasi scanner
                 this.html5QrcodeScanner = new Html5Qrcode(elementId);
                 const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+                
                 this.html5QrcodeScanner.start({ facingMode: "environment" }, config, callback)
                 .then(() => {
-                    showToast('Kamera aktif');
-                    $(elementId).parent.style.display = 'block';
-                    if(mode === 'kasir') $('scanStatus').innerText = 'Mencari QR Code...';
+                    showToast('Kamera Aktif');
+                    if(mode === 'kasir') {
+                        $('scanStatus').innerText = 'Mencari QR/Barcode...';
+                    } else if (mode === 'stok') {
+                        $('stokScanFeedback').style.display = 'none';
+                        $('stokScanPlaceholder').innerText = 'Arahkan kamera ke Barcode/QR';
+                    }
                 })
                 .catch(err => {
-                    showToast('Gagal akses kamera');
+                    showToast('Gagal akses kamera: ' + err);
                     console.error(err);
                 });
             },
@@ -510,6 +549,8 @@
                     }).catch(err => {});
                     this.html5QrcodeScanner = null;
                 }
+                // Reset placeholder text
+                if($('stokScanPlaceholder')) $('stokScanPlaceholder').innerText = 'Area Kamera';
             }
         };
 
@@ -532,13 +573,23 @@
                 $('stokList').innerHTML = html || '<div class="empty-state">Tidak ada produk</div>';
             },
             fillByCode(code) {
-                const p = db.get('products').find(x => x.code === code);
+                const products = db.get('products');
+                const p = products.find(x => x.code === code);
                 if(p) {
+                    // Produk lama: Isi semua data
                     $('stokName').value = p.name;
                     $('stokBuy').value = p.buyPrice;
                     $('stokSell').value = p.sellPrice;
-                    $('stokQty').value = 0; // Default add 0
+                    $('stokQty').value = 0; // Default nambah 0
                     this.calcMargin();
+                } else {
+                    // Produk baru: Reset form kecuali kode
+                    $('stokName').value = '';
+                    $('stokBuy').value = '';
+                    $('stokSell').value = '';
+                    $('stokQty').value = '';
+                    $('stokMarginInfo').innerText = 'Margin: Rp 0';
+                    showToast('Produk Baru - Silakan lengkapi data');
                 }
             },
             calcMargin() {
@@ -568,7 +619,9 @@
                     products[idx].buyPrice = buy;
                     products[idx].sellPrice = sell;
                     products[idx].stock += qty; // Add to stock
-                    logs.add(name, qty > 0 ? 'IN' : 'OUT', `Stok update: ${oldStock} -> ${products[idx].stock}`);
+                    
+                    const type = qty > 0 ? 'IN' : 'OUT';
+                    logs.add(name, type, `Stok update: ${oldStock} -> ${products[idx].stock} (${qty})`);
                     showToast('Stok berhasil diupdate');
                 } else {
                     // New Product
@@ -576,14 +629,16 @@
                         id: Date.now(),
                         code, name, buyPrice: buy, sellPrice: sell, stock: qty
                     });
-                    logs.add(name, 'IN', 'Produk Baru');
+                    logs.add(name, 'IN', 'Produk Baru ditambahkan');
                     showToast('Produk baru ditambahkan');
                 }
                 
                 db.set('products', products);
                 this.render();
-                // Clear form
-                $('stokCode').value = ''; $('stokName').value = ''; $('stokQty').value = 0;
+                
+                // Reset Form tapi biarkan kode jika mau scan berurutan
+                $('stokName').value = ''; $('stokBuy').value = ''; $('stokSell').value = ''; $('stokQty').value = '';
+                $('stokMarginInfo').innerText = 'Margin: Rp 0';
             },
             edit(code) {
                 const p = db.get('products').find(x => x.code === code);
@@ -700,7 +755,6 @@
                 const items = [...this.cart];
                 const date = new Date().toISOString();
 
-                // Generate Receipt HTML
                 let receiptHtml = `
                     <div class="thermal-receipt" id="receipt-content">
                         <div class="thermal-header">
@@ -731,7 +785,6 @@
                         </div>
                         <div class="thermal-footer">
                             <p>Terima Kasih atas Kunjungan Anda</p>
-                            <p>Barang yang dibeli tidak dapat ditukar</p>
                         </div>
                     </div>
                     <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Cetak Sekarang</button>
@@ -744,12 +797,10 @@
                 `);
             },
             finalizeTransaction(id, total, items, date) {
-                // Save Transaction
                 const trxs = db.get('transactions');
                 trxs.unshift({ id, date, total, items });
                 db.set('transactions', trxs);
 
-                // Reduce Stock
                 const products = db.get('products');
                 items.forEach(item => {
                     const p = products.find(x => x.id === item.id);
@@ -805,7 +856,7 @@
                 list.unshift({ 
                     date: new Date().toISOString(), 
                     product: name, 
-                    type, // 'IN' or 'OUT'
+                    type, 
                     note 
                 });
                 db.set('logs', list);
@@ -839,7 +890,6 @@
                 $('reportExpense').innerText = formatRp(totalExp);
                 $('reportProfit').innerText = formatRp(profit);
 
-                // Render List
                 $('trxList').innerHTML = trxs.slice(0, 10).map(t => `
                     <div class="list-item">
                         <div class="item-info">
@@ -850,12 +900,10 @@
                     </div>
                 `).join('') || '<div class="empty-state">Belum ada transaksi</div>';
 
-                // Chart
                 this.renderChart(trxs);
             },
             renderChart(trxs) {
                 const ctx = $('salesChart').getContext('2d');
-                // Group by last 7 days (simple logic)
                 const labels = [];
                 const data = [];
                 for(let i=6; i>=0; i--) {
@@ -863,8 +911,6 @@
                     d.setDate(d.getDate() - i);
                     const dateStr = d.toLocaleDateString('id-ID', {day:'numeric', month:'short'});
                     labels.push(dateStr);
-                    
-                    // Sum for this day
                     const dayTotal = trxs.filter(t => new Date(t.date).toDateString() === d.toDateString()).reduce((a,b) => a + b.total, 0);
                     data.push(dayTotal);
                 }
@@ -923,11 +969,7 @@
                 const enabled = db.obj('storeProfile').pinEnabled;
                 if(!enabled) return true;
                 const savedPin = db.obj('storeProfile').pinCode;
-                if(!savedPin) return true; // Should not happen if enabled
-
-                // Simple prompt for PIN check
-                // In a real app, use a custom modal input. Here using standard for simplicity of code block, 
-                // but let's wrap it in a custom check.
+                if(!savedPin) return true; 
                 let attempts = 0;
                 while(attempts < 3) {
                     const input = prompt("Masukkan PIN Keamanan:");
@@ -1015,8 +1057,8 @@
                 $('clockTime').innerText = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
             }, 1000);
 
-            // Open first section of stock by default
-            toggleCollapsible('stokFormSection', true);
+            // Buka scan section stok secara default
+            toggleCollapsible('stokScanSection', true);
         };
 
     </script>
